@@ -12,9 +12,7 @@ Describe 'Get-Instance' {
             $result = Get-LocalDbInstance -Verbose
 
             $result | Should -Not -BeNullOrEmpty
-            $result.DataSource | Should -Not -BeNullOrEmpty
-            $result.ConnectionString | Should -Not -BeNullOrEmpty
-            $result.Version | Should -Not -BeNullOrEmpty
+            $result.InstanceName | Should -Not -BeNullOrEmpty
         }
 
         BeforeDiscovery {
