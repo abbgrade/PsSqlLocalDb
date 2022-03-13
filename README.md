@@ -18,6 +18,7 @@ PowerShell Wrapper for SqlLocalDB Utility.
 - Test automation is based on [Pester](https://pester.dev)
 - Commands are named based on [Approved Verbs for PowerShell Commands](https://docs.microsoft.com/de-de/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands)
 - This project uses [git-flow](https://github.com/nvie/gitflow).
+- This project uses [PsBuildTasks](https://github.com/abbgrade/PsBuildTasks).
 
 ### Build
 
