@@ -4,6 +4,20 @@ PowerShell Wrapper for SqlLocalDB Utility.
 
 ## Installation
 
+### From PowerShell Gallery
+
+Install PsSqlLocalDb from [PowerShell Gallery](https://www.powershellgallery.com/packages/PsSqlLocalDb) using a PowerShell command line:
+
+```powershell
+Install-Module -Name PsSqlLocalDb -Scope CurrentUser
+```
+
+### From Source
+
+```powershell
+Invoke-Build Install
+```
+
 ## Usage
 
 ## Commands
