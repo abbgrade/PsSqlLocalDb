@@ -10,6 +10,8 @@ PowerShell Wrapper for SqlLocalDB Utility.
 
 ## Changelog
 
+See the [changelog](./CHANGELOG.md) file.
+
 ## Development
 
 [![.github/workflows/build-validation.yml](https://github.com/abbgrade/PsSqlLocalDb/actions/workflows/build-validation.yml/badge.svg?branch=develop)](https://github.com/abbgrade/PsSqlLocalDb/actions/workflows/build-validation.yml)
@@ -20,6 +22,7 @@ PowerShell Wrapper for SqlLocalDB Utility.
 - Test automation is based on [Pester](https://pester.dev)
 - Commands are named based on [Approved Verbs for PowerShell Commands](https://docs.microsoft.com/de-de/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands)
 - This project uses [git-flow](https://github.com/nvie/gitflow).
+- This project uses [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 - This project uses [PsBuildTasks](https://github.com/abbgrade/PsBuildTasks).
 
 ### Build
