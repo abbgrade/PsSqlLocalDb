@@ -22,7 +22,7 @@ Describe 'Get-Instance' {
         Context 'PsSqlClient' -Skip:( -Not $Script:PsSqlClient ) {
 
             BeforeAll {
-                $Script:LocalDb = Get-LocalDb
+                $Script:LocalDb = Get-LocalDbInstance
             }
 
             It 'Connects by DataSource' {
