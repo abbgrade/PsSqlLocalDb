@@ -12,7 +12,7 @@ Describe 'Get-Instance' {
             $result = Get-LocalDbInstance -Verbose
 
             $result | Should -Not -BeNullOrEmpty
-            $result.InstanceName | Should -Not -BeNullOrEmpty
+            $result.Name | Should -Not -BeNullOrEmpty
         }
 
         BeforeDiscovery {
@@ -26,11 +26,7 @@ Describe 'Get-Instance' {
             }
 
             It 'Connects by DataSource' {
-                $Script:SqlConnection = Connect-TSqlInstance -DataSource $Script:LocalDb.DataSource
-            }
-
-            It 'Connects by ConnectionString' {
-                $Script:SqlConnection = Connect-TSqlInstance -ConnectionString $Script:LocalDb.ConnectionString
+                $Script:SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:LocalDb.Name )"
             }
 
             AfterEach {

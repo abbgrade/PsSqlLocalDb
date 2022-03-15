@@ -15,7 +15,7 @@ function Get-Instance {
 
     Name                           Value
     ----                           -----
-    InstanceName                   MSSQLLocalDB
+    Name                           MSSQLLocalDB
     Version                        v11.0
 
     #>
@@ -23,24 +23,24 @@ function Get-Instance {
     [CmdletBinding()]
     param ()
 
-    $instanceName, $version = sqllocaldb info
+    $name, $version = sqllocaldb info
 
-    if ( -Not $instanceName ) {
+    if ( -Not $name ) {
         Write-Error "'sqllocaldb info' did not return a instance name"
     }
     else {
-        Write-Verbose "Found LocalDb instance $instanceName."
+        Write-Verbose "Found LocalDb instance $name."
     }
 
     if ( -Not $version ) {
-        Write-Warning "'sqllocaldb info' did not return a version"
+        Write-Warning "'sqllocaldb info' did not return a instance version"
     }
     else {
         Write-Verbose "Found LocalDb version $version."
     }
 
     [PSCustomObject] @{
-        InstanceName = $InstanceName
-        Version      = $version
+        Name    = $Name
+        Version = $version
     } | Write-Output
 }

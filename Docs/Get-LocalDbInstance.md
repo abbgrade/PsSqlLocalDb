@@ -28,10 +28,10 @@ Get-LocalDbInstance
 
 \[PSCustomObject\]
 
-Name                           Value
-----                           -----
-InstanceName                   MSSQLLocalDB
-Version                        v11.0
+Name    Value
+----    -----
+Name    MSSQLLocalDB
+Version v11.0
 
 ## PARAMETERS
 
