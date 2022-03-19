@@ -26,7 +26,7 @@ Describe 'Get-Instance' {
             }
 
             It 'Connects by DataSource' {
-                $Script:SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:LocalDb.Name )"
+                $Script:SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:LocalDb.Name )" -ConnectTimeout 30
             }
 
             AfterEach {
