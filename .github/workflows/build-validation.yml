@@ -6,4 +6,4 @@ on:
 
 jobs:
   build-validation:
-    uses: abbgrade/PsBuildTasks/.github/workflows/build-validation-windows.yml@b2944065e4db5a788dae5c05aa016e3f25274faf
+    uses: abbgrade/PsBuildTasks/.github/workflows/build-validation-windows.yml@9153fdeca6613099e2eea455059ea3f0833a4431
