@@ -1,5 +1,16 @@
 function Stop-Instance {
-    
+
+    <#
+
+    .SYNOPSIS
+    stops a sqllocaldb instance.
+
+    .EXAMPLE
+    PS> $instance = New-LocalDbInstance
+    PS> $instance | Stop-LocalDbInstance
+
+    #>
+
     [CmdletBinding()]
     param (
         # Specifies the name of the instance to stop.
@@ -10,7 +21,7 @@ function Stop-Instance {
         [Parameter()]
         [switch] $Force
     )
-    
+
     if ( $Force ) {
         $response = sqllocaldb stop $Name -k
     } else {
@@ -21,5 +32,5 @@ function Stop-Instance {
     if ( -not $? ) {
         Write-Error "Failed to stop sqllocaldb instance $Name."
     }
-    
+
 }

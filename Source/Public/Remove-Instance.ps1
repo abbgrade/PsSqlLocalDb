@@ -1,5 +1,16 @@
 function Remove-Instance {
 
+    <#
+
+    .SYNOPSIS
+    Removes a sqllocaldb instance.
+
+    .EXAMPLE
+    PS> $instance = New-LocalDbInstance
+    PS> $instance | Remove-LocalDbInstance
+
+    #>
+
     [CmdletBinding()]
     param (
         # Specifies the name of the instance to remove.
