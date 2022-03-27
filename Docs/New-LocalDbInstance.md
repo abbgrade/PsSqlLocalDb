@@ -5,52 +5,61 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-LocalDbInstance
+# New-LocalDbInstance
 
 ## SYNOPSIS
-Returns connection parameters to a available localDb.
+Creates a new sqllocaldb instance.
 
 ## SYNTAX
 
-### All (Default)
 ```
-Get-LocalDbInstance [<CommonParameters>]
-```
-
-### Single
-```
-Get-LocalDbInstance [-Name <String>] [<CommonParameters>]
+New-LocalDbInstance [[-Name] <String>] [[-Version] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Uses \[SqlLocalDB Utility\](https://docs.microsoft.com/en-us/sql/tools/sqllocaldb-utility?view=sql-server-ver15) to get info about the available local db.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-LocalDbInstance
+New-LocalDbInstance -Name 'foobar'
 ```
 
 \[PSCustomObject\]
 
 Name                           Value
 ----                           -----
-Name                           MSSQLLocalDB
-Version                        v11.0
+Name                           foobar
+Version                        15.0.4153.1
 
 ## PARAMETERS
 
 ### -Name
-Specifies the name of the instance.
+Specifies the name of the instance to create.
 
 ```yaml
 Type: String
-Parameter Sets: Single
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 1
+Default value: ( [string](New-Guid) ).Substring(0, 8)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Version
+Specifies the sql server version to use.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
