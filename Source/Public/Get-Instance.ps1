@@ -49,39 +49,48 @@ function Get-Instance {
                 Write-Error "Failed to get info from sqllocaldb."
             }
 
-            $processedResponse = $response |
+            $responseIndex = 0
+            $instance = New-Object PSCustomObject
+            $response |
             Where-Object { $_ } |
             ForEach-Object {
-                $Local:item = $_ -split ':', 2
-                $Local:key = $Local:item[0]
-                $Local:value = $Local:item[1]
-                if ( $Local:value ) {
-                    $Local:value = $Local:value.Trim()
+                $item = $_ -split ':', 2
+                $key = $item[0]
+                $value = $item[1]
+                if ( $value ) {
+                    $value = $value.Trim()
                 }
-                Write-Verbose "$Local:key=$Local:value"
-                Write-Output $Local:value
-            }
-            $name, $version, $strongName, $owner, $autoCreate, $state, $lastStart, $namedPipe = $processedResponse
+                Write-Verbose "$key=$value"
 
-            if ( -Not $name ) {
+                switch ( $responseIndex ) {
+                    0 { $instance | Add-Member Name $value }
+                    1 { $instance | Add-Member Version $value }
+                    # 2 { $instance | Add-Member strongName $value }
+                    # 3 { $instance | Add-Member owner $value }
+                    # 4 { $instance | Add-Member autoCreate $value }
+                    # 5 { $instance | Add-Member state $value }
+                    # 6 { $instance | Add-Member lastStart $value }
+                    7 { $instance | Add-Member NamedPipe $value }
+                }
+
+                $responseIndex += 1
+            }
+
+            if ( -Not $instance.Name ) {
                 Write-Error "'sqllocaldb info' did not return a instance name"
             }
             else {
                 Write-Verbose "Found LocalDb instance $name."
             }
 
-            if ( -Not $version ) {
+            if ( -Not $instance.Version ) {
                 Write-Warning "'sqllocaldb info' did not return a instance version"
             }
             else {
                 Write-Verbose "Found LocalDb version $version."
             }
 
-            [PSCustomObject] @{
-                Name    = $name
-                Version = $version
-                NamedPipe = $namedPipe
-            } | Write-Output
+            $instance | Write-Output
         }
         default {
             Write-Error "ParameterSet $PSItem is not supported"

@@ -16,24 +16,19 @@ Describe 'Get-Instance' {
             $result.Version | Should -Not -BeNullOrEmpty
         }
 
-        BeforeDiscovery {
-            $Script:PsSqlClient = Import-Module PsSqlClient -PassThru -ErrorAction SilentlyContinue
-        }
-
-        Context 'PsSqlClient' -Skip:( -Not $Script:PsSqlClient ) {
-
+        Context 'New Instance' {
             BeforeAll {
-                $Script:LocalDb = Get-LocalDbInstance | Select-Object -First 1
+                $Script:Instance = New-LocalDbInstance
             }
 
-            It 'Connects by DataSource' {
-                $Script:SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:LocalDb.Name )" -ConnectTimeout 30
+            AfterAll {
+                $Script:Instance | Remove-LocalDbInstance
             }
 
-            AfterEach {
-                if ( $Script:SqlConnection ) {
-                    Disconnect-TSqlInstance -Connection $Script:SqlConnection
-                }
+            It 'Returns a specific instance' {
+                $result = Get-LocalDbInstance -Name $Script:Instance.Name
+                $result.Count | Should -Be 1
+                $result.Name | Should -Be $Script:Instance.Name
             }
         }
     }
