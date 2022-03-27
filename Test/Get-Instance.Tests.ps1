@@ -6,32 +6,38 @@ Describe 'Get-Instance' {
         Import-Module $PSScriptRoot\..\Source\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context 'LocalDb' -Skip:( -Not ( Test-LocalDbUtility )) {
-
-        It 'Returns values' {
-            $result = Get-LocalDbInstance -Verbose
-
-            $result | Should -Not -BeNullOrEmpty
-            $result.Name | Should -Not -BeNullOrEmpty
+    Context 'First Instance' {
+        BeforeAll {
+            $Script:FirstInstance = New-LocalDbInstance
         }
 
-        BeforeDiscovery {
-            $Script:PsSqlClient = Import-Module PsSqlClient -PassThru -ErrorAction SilentlyContinue
+        AfterAll {
+            $Script:FirstInstance | Remove-LocalDbInstance
         }
 
-        Context 'PsSqlClient' -Skip:( -Not $Script:PsSqlClient ) {
+        Context 'LocalDb' -Skip:( -Not ( Test-LocalDbUtility )) {
 
-            BeforeAll {
-                $Script:LocalDb = Get-LocalDbInstance
+            It 'Returns values' {
+                $result = Get-LocalDbInstance
+
+                $result | Should -Not -BeNullOrEmpty
+                $result.Name | Should -Not -BeNullOrEmpty
             }
 
-            It 'Connects by DataSource' {
-                $Script:SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:LocalDb.Name )" -ConnectTimeout 30
-            }
+            Context 'New Instance' {
+                BeforeAll {
+                    $Script:Instance = New-LocalDbInstance
+                }
 
-            AfterEach {
-                if ( $Script:SqlConnection ) {
-                    Disconnect-TSqlInstance -Connection $Script:SqlConnection
+                AfterAll {
+                    $Script:Instance | Remove-LocalDbInstance
+                }
+
+                It 'Returns a specific instance' {
+                    $result = Get-LocalDbInstance -Name $Script:Instance.Name
+                    $result.Count | Should -Be 1
+                    $result.Name | Should -Be $Script:Instance.Name
+                    $result.Version | Should -Not -BeNullOrEmpty
                 }
             }
         }

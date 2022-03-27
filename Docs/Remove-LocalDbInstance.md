@@ -5,54 +5,42 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-LocalDbInstance
+# Remove-LocalDbInstance
 
 ## SYNOPSIS
-Returns connection parameters to a available localDb.
+Removes a sqllocaldb instance.
 
 ## SYNTAX
 
-### All (Default)
 ```
-Get-LocalDbInstance [<CommonParameters>]
-```
-
-### Single
-```
-Get-LocalDbInstance [-Name <String>] [<CommonParameters>]
+Remove-LocalDbInstance [-Name] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Uses \[SqlLocalDB Utility\](https://docs.microsoft.com/en-us/sql/tools/sqllocaldb-utility?view=sql-server-ver15) to get info about the available local db.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-LocalDbInstance
+$instance = New-LocalDbInstance
+PS> $instance | Remove-LocalDbInstance
 ```
-
-\[PSCustomObject\]
-
-Name                           Value
-----                           -----
-Name                           MSSQLLocalDB
-Version                        v11.0
 
 ## PARAMETERS
 
 ### -Name
-Specifies the name of the instance.
+Specifies the name of the instance to remove.
 
 ```yaml
 Type: String
-Parameter Sets: Single
+Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
+Required: True
+Position: 1
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
