@@ -54,7 +54,10 @@ function Get-Instance {
             ForEach-Object {
                 $Local:item = $_ -split ':', 2
                 $Local:key = $Local:item[0]
-                $Local:value = $Local:item[1].Trim()
+                $Local:value = $Local:item[1]
+                if ( $Local:value ) {
+                    $Local:value = $Local:value.Trim()
+                }
                 Write-Verbose "$Local:key=$Local:value"
                 Write-Output $Local:value
             }
