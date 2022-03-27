@@ -12,8 +12,14 @@ Returns connection parameters to a available localDb.
 
 ## SYNTAX
 
+### All (Default)
 ```
 Get-LocalDbInstance [<CommonParameters>]
+```
+
+### Single
+```
+Get-LocalDbInstance [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,12 +34,27 @@ Get-LocalDbInstance
 
 \[PSCustomObject\]
 
-Name    Value
-----    -----
-Name    MSSQLLocalDB
-Version v11.0
+Name                           Value
+----                           -----
+Name                           MSSQLLocalDB
+Version                        v11.0
 
 ## PARAMETERS
+
+### -Name
+Specifies the name of the instance.
+
+```yaml
+Type: String
+Parameter Sets: Single
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).

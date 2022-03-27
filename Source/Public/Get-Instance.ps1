@@ -22,7 +22,7 @@ function Get-Instance {
 
     [CmdletBinding( DefaultParameterSetName = 'All' )]
     param (
-        # Specifies the name of the instance to create.
+        # Specifies the name of the instance.
         [Parameter( ParameterSetName = 'Single' )]
         [ValidateNotNullOrEmpty()]
         [string] $Name
