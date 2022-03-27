@@ -22,7 +22,6 @@ Describe 'Get-Instance' {
 
                 $result | Should -Not -BeNullOrEmpty
                 $result.Name | Should -Not -BeNullOrEmpty
-                $result.Version | Should -Not -BeNullOrEmpty
             }
 
             Context 'New Instance' {
@@ -38,6 +37,7 @@ Describe 'Get-Instance' {
                     $result = Get-LocalDbInstance -Name $Script:Instance.Name
                     $result.Count | Should -Be 1
                     $result.Name | Should -Be $Script:Instance.Name
+                    $result.Version | Should -Not -BeNullOrEmpty
                 }
             }
         }
