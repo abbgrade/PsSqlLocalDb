@@ -22,15 +22,19 @@ function Stop-Instance {
         [switch] $Force
     )
 
-    if ( $Force ) {
-        $response = sqllocaldb stop $Name -k
-    } else {
-        $response = sqllocaldb stop $Name
-    }
+    process {
+        Write-Verbose "Stop sqllocaldb instance $Name."
 
-    $response | Where-Object { $_ } | Write-Verbose
-    if ( -not $? ) {
-        Write-Error "Failed to stop sqllocaldb instance $Name."
-    }
+        if ( $Force ) {
+            $response = sqllocaldb stop $Name -k
+        }
+        else {
+            $response = sqllocaldb stop $Name
+        }
 
+        $response | Where-Object { $_ } | Write-Verbose
+        if ( -not $? ) {
+            Write-Error "Failed to stop sqllocaldb instance $Name."
+        }
+    }
 }

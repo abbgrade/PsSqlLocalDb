@@ -30,12 +30,15 @@ function New-Instance {
         [string] $Version
     )
 
-    $response = sqllocaldb create $Name $Version -s
+    process {
+        Write-Verbose "Create sqllocaldb instance $Name."
+        $response = sqllocaldb create $Name $Version -s
 
-    $response | Where-Object { $_ } | Write-Verbose
-    if ( -not $? ) {
-        Write-Error "Failed to create sqllocaldb instance $Name."
+        $response | Where-Object { $_ } | Write-Verbose
+        if ( -not $? ) {
+            Write-Error "Failed to create sqllocaldb instance $Name."
+        }
+
+        Get-Instance -Name $Name
     }
-
-    Get-Instance -Name $Name
 }

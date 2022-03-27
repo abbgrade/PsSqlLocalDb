@@ -19,13 +19,16 @@ function Remove-Instance {
         [string] $Name
     )
 
-    Stop-Instance -Name $Name
+    process {
+        Write-Verbose "Remove sqllocaldb instance $Name."
+        Stop-Instance -Name $Name
 
-    $response = sqllocaldb delete $Name
+        $response = sqllocaldb delete $Name
 
-    $response | Where-Object { $_ } | Write-Verbose
-    if ( -not $? ) {
-        Write-Error "Failed to delete sqllocaldb instance $Name."
+        $response | Where-Object { $_ } | Write-Verbose
+        if ( -not $? ) {
+            Write-Error "Failed to delete sqllocaldb instance $Name."
+        }
+
     }
-
 }

@@ -20,17 +20,19 @@ function Test-Utility {
     [CmdletBinding()]
     param ()
 
-    try {
-        $response = sqllocaldb
+    process {
+        try {
+            $response = sqllocaldb
 
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to test sqllocaldb util."
+            $response | Where-Object { $_ } | Write-Verbose
+            if ( -not $? ) {
+                Write-Error "Failed to test sqllocaldb util."
+            }
+
+            return $true
         }
-
-        return $true
-    }
-    catch {
-        return $false
+        catch {
+            return $false
+        }
     }
 }
