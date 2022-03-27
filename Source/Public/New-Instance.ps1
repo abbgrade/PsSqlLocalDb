@@ -1,5 +1,22 @@
 function New-Instance {
 
+    <#
+
+    .SYNOPSIS
+    Creates a new sqllocaldb instance.
+
+    .EXAMPLE
+    PS> New-LocalDbInstance -Name 'foobar'
+
+    [PSCustomObject]
+
+    Name                           Value
+    ----                           -----
+    Name                           foobar
+    Version                        15.0.4153.1
+
+    #>
+
     [CmdletBinding()]
     param (
         # Specifies the name of the instance to create.
