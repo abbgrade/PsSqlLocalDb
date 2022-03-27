@@ -21,7 +21,13 @@ function Test-Utility {
     param ()
 
     try {
-        sqllocaldb | Out-Null
+        $response = sqllocaldb
+
+        $response | Where-Object { $_ } | Write-Verbose
+        if ( -not $? ) {
+            Write-Error "Failed to test sqllocaldb util."
+        }
+
         return $true
     }
     catch {
