@@ -1,21 +1,21 @@
 #Requires -Modules @{ ModuleName='Pester'; ModuleVersion='5.0.0' }
 
-Describe 'Get-Instance' {
+Describe Get-Instance {
 
     BeforeDiscovery {
-        Import-Module $PSScriptRoot\..\Source\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
+        Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context 'First Instance' {
+    Context FirstInstance {
         BeforeAll {
-            $Script:FirstInstance = New-LocalDbInstance
+            $FirstInstance = New-LocalDbInstance
         }
 
         AfterAll {
-            $Script:FirstInstance | Remove-LocalDbInstance
+            $FirstInstance | Remove-LocalDbInstance
         }
 
-        Context 'LocalDb' -Skip:( -Not ( Test-LocalDbUtility )) {
+        Context LocalDb -Skip:( -Not ( Test-LocalDbUtility )) {
 
             It 'Returns values' {
                 $result = Get-LocalDbInstance
@@ -24,19 +24,19 @@ Describe 'Get-Instance' {
                 $result.Name | Should -Not -BeNullOrEmpty
             }
 
-            Context 'New Instance' {
+            Context NewInstance {
                 BeforeAll {
-                    $Script:Instance = New-LocalDbInstance
+                    $Instance = New-LocalDbInstance
                 }
 
                 AfterAll {
-                    $Script:Instance | Remove-LocalDbInstance
+                    $Instance | Remove-LocalDbInstance
                 }
 
                 It 'Returns a specific instance' {
-                    $result = Get-LocalDbInstance -Name $Script:Instance.Name
+                    $result = Get-LocalDbInstance -Name $Instance.Name
                     $result.Count | Should -Be 1
-                    $result.Name | Should -Be $Script:Instance.Name
+                    $result.Name | Should -Be $Instance.Name
                     $result.Version | Should -Not -BeNullOrEmpty
                 }
             }

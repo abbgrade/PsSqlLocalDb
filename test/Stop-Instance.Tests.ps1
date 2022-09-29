@@ -1,30 +1,37 @@
 #Requires -Modules @{ ModuleName='Pester'; ModuleVersion='5.0.0' }
 
-Describe 'Stop-Instance' {
+Describe Stop-Instance {
 
     BeforeDiscovery {
-        Import-Module $PSScriptRoot\..\Source\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
+        Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context 'LocalDb' -Skip:( -Not ( Test-LocalDbUtility )) {
+    Context LocalDb -Skip:( -Not ( Test-LocalDbUtility )) {
         BeforeEach {
-            $Script:Instance = New-LocalDbInstance
+            $Instance = New-LocalDbInstance
         }
 
         AfterEach {
-            $Script:Instance | Remove-LocalDbInstance
+            $Instance | Remove-LocalDbInstance
         }
 
-        It 'Stops the instance' {
-            $Script:Instance | Stop-LocalDbInstance
-
-            Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:Instance.Name )"
+        BeforeDiscovery {
+            $PsSqlClient = Import-Module PsSqlClient -PassThru -ErrorAction SilentlyContinue
         }
 
-        It 'Stops used instance' {
-            Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:Instance.Name )"
+        Context PsSqlClient -Skip:( -Not $PsSqlClient ) {
 
-            $Script:Instance | Stop-LocalDbInstance -Force
+            It 'Stops the instance' {
+                $Instance | Stop-LocalDbInstance
+
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
+            }
+
+            It 'Stops used instance' {
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
+
+                $Instance | Stop-LocalDbInstance -Force
+            }
         }
     }
 }
