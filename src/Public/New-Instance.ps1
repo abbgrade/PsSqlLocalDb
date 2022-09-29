@@ -1,3 +1,9 @@
+class SqlServerVersion : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        return ( Get-Version | Select-Object -ExpandProperty Version )
+    }
+}
+
 function New-Instance {
 
     <#
@@ -27,6 +33,7 @@ function New-Instance {
         # Specifies the sql server version to use.
         [Parameter( )]
         [ValidateNotNullOrEmpty()]
+        [ValidateSet([SqlServerVersion])]
         [string] $Version
     )
 
@@ -39,6 +46,12 @@ function New-Instance {
             Write-Error "Failed to create sqllocaldb instance $Name."
         }
 
-        Get-Instance -Name $Name
+        $instance = Get-Instance -Name $Name
+        if ( $instance -and $instance.Version -ne '0.0' ) {
+            $instance | Write-Output
+        }
+        else {
+            Write-Error 'Failed to return new sqllocaldb instance.'
+        }
     }
 }

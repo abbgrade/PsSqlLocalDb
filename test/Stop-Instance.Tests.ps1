@@ -2,11 +2,11 @@
 
 Describe Stop-Instance {
 
-    BeforeDiscovery {
+    BeforeAll {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context LocalDb -Skip:( -Not ( Test-LocalDbUtility )) {
+    Context LocalDb {
         BeforeEach {
             $Instance = New-LocalDbInstance
         }

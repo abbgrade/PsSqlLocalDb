@@ -2,11 +2,11 @@
 
 Describe New-Instance {
 
-    BeforeDiscovery {
+    BeforeAll {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context LocalDb -Skip:( -Not ( Test-LocalDbUtility )) {
+    Context LocalDb {
 
         It 'Returns values' {
             $Instance = New-LocalDbInstance
@@ -14,6 +14,20 @@ Describe New-Instance {
             $Instance | Should -Not -BeNullOrEmpty
             $Instance.Name | Should -Not -BeNullOrEmpty
             $Instance.Version | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Creates with specified version' {
+            $Instance = New-LocalDbInstance -Version 13.1.4001.0
+
+            $Instance | Should -Not -BeNullOrEmpty
+            $Instance.Name | Should -Not -BeNullOrEmpty
+            $Instance.Version | Should -Be 13.1.4001.0
+        }
+
+        It 'Throws with unavailable version' {
+            {
+                New-LocalDbInstance -Version 47.11
+            } | Should -Throw 'Cannot validate argument on parameter ''Version'''
         }
 
         AfterEach {

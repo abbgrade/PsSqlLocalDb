@@ -2,7 +2,7 @@
 
 Describe Get-Instance {
 
-    BeforeDiscovery {
+    BeforeAll {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
@@ -15,7 +15,7 @@ Describe Get-Instance {
             $FirstInstance | Remove-LocalDbInstance
         }
 
-        Context LocalDb -Skip:( -Not ( Test-LocalDbUtility )) {
+        Context LocalDb {
 
             It 'Returns values' {
                 $result = Get-LocalDbInstance
@@ -38,6 +38,7 @@ Describe Get-Instance {
                     $result.Count | Should -Be 1
                     $result.Name | Should -Be $Instance.Name
                     $result.Version | Should -Not -BeNullOrEmpty
+                    $result.Version | Should -BeOfType System.Version
                 }
             }
         }
