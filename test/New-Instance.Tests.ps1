@@ -16,18 +16,41 @@ Describe New-Instance {
             $Instance.Version | Should -Not -BeNullOrEmpty
         }
 
-        It 'Creates with specified version' {
-            $Instance = New-LocalDbInstance -Version 13.1.4001.0
+        Context Version {
 
-            $Instance | Should -Not -BeNullOrEmpty
-            $Instance.Name | Should -Not -BeNullOrEmpty
-            $Instance.Version | Should -Be 13.1.4001.0
+            BeforeAll {
+                $Version = Get-LocalDbVersion | Select-Object -First 1 -ExpandProperty Version
+            }
+
+            It 'Creates with specified full version' {
+                $Instance = New-LocalDbInstance -Version $Version
+
+                $Instance | Should -Not -BeNullOrEmpty
+                $Instance.Name | Should -Not -BeNullOrEmpty
+                $Instance.Version | Should -Be $Version
+            }
+
+            It 'Creates with specified major.minor version' {
+                $Instance = New-LocalDbInstance -Version "$( $Version.Major ).$( $Version.Minor )"
+
+                $Instance | Should -Not -BeNullOrEmpty
+                $Instance.Name | Should -Not -BeNullOrEmpty
+                $Instance.Version | Should -Be $Version
+            }
+
+            It 'Creates with specified major.minor.build version' {
+                $Instance = New-LocalDbInstance -Version "$( $Version.Major ).$( $Version.Minor ).$( $Version.Build )"
+
+                $Instance | Should -Not -BeNullOrEmpty
+                $Instance.Name | Should -Not -BeNullOrEmpty
+                $Instance.Version | Should -Be $Version
+            }
         }
 
         It 'Throws with unavailable version' {
             {
                 New-LocalDbInstance -Version 47.11
-            } | Should -Throw 'Cannot validate argument on parameter ''Version'''
+            } | Should -Throw
         }
 
         AfterEach {

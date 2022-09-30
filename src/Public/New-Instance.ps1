@@ -1,6 +1,14 @@
 class SqlServerVersion : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
-        return ( Get-Version | Select-Object -ExpandProperty Version )
+        return (
+            Get-Version |
+            Select-Object -ExpandProperty Version |
+            ForEach-Object {
+                $_ | Write-Output
+                New-Object System.Version $_.Major, $_.Minor | Write-Output
+                New-Object System.Version $_.Major, $_.Minor, $_.Build | Write-Output
+            }
+        )
     }
 }
 
