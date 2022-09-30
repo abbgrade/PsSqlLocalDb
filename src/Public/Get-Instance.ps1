@@ -67,7 +67,7 @@ function Get-Instance {
 
                     switch ( $responseIndex ) {
                         0 { $instance | Add-Member Name $value }
-                        1 { $instance | Add-Member Version $value }
+                        1 { $instance | Add-Member Version ( New-Object System.Version $value ) }
                         # 2 { $instance | Add-Member strongName $value }
                         # 3 { $instance | Add-Member owner $value }
                         # 4 { $instance | Add-Member autoCreate $value }
@@ -80,7 +80,7 @@ function Get-Instance {
                 }
 
                 if ( -Not $instance.Name ) {
-                    Write-Warning "'sqllocaldb info' did not return a instance name for $Name"
+                    Write-Warning "'sqllocaldb info' did not return an instance with name $Name"
                     $instance.Name = $Name
                 }
                 else {
@@ -88,7 +88,7 @@ function Get-Instance {
                 }
 
                 if ( -Not $instance.Version ) {
-                    Write-Warning "'sqllocaldb info' did not return a instance version for $Name"
+                    Write-Warning "'sqllocaldb info' did not return an instance version for $Name"
                 }
                 else {
                     Write-Verbose "Found LocalDb version $version."

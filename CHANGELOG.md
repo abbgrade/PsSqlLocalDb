@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2022-09-30
+
+### Added
+
+- Added `Get-Version` command.
+
+### Changed
+
+- Type of instance.Version was changed from string to System.Version.
+- Added parameter validation of version for `New-Instance`.
+
 ## [0.2.0] - 2022-03-27
 
 ### Added
