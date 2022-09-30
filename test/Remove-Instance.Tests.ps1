@@ -1,29 +1,29 @@
 #Requires -Modules @{ ModuleName='Pester'; ModuleVersion='5.0.0' }
 
-Describe 'Remove-Instance' {
+Describe Remove-Instance {
 
-    BeforeDiscovery {
-        Import-Module $PSScriptRoot\..\Source\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
+    BeforeAll {
+        Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context 'LocalDb' -Skip:( -Not ( Test-LocalDbUtility )) {
+    Context LocalDb {
         BeforeEach {
-            $Script:Instance = New-LocalDbInstance
+            $Instance = New-LocalDbInstance
         }
 
         It 'removes a running instance' {
-            $Script:Instance | Remove-LocalDbInstance
+            $Instance | Remove-LocalDbInstance
             {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:Instance.Name )"
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
             } | Should -Throw -Because 'a removed instance should not be used for connections'
         }
 
         It 'removes a stopped instance' {
 
-            $Script:Instance | Stop-LocalDbInstance
-            $Script:Instance | Remove-LocalDbInstance
+            $Instance | Stop-LocalDbInstance
+            $Instance | Remove-LocalDbInstance
             {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Script:Instance.Name )"
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
             } | Should -Throw -Because 'a removed instance should not be used for connections'
         }
     }
