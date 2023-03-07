@@ -22,10 +22,14 @@ function Get-Instance {
 
     [CmdletBinding( DefaultParameterSetName = 'All' )]
     param (
-        # Specifies the name of the instance.
+        # Filters by name of the sql server instance.
         [Parameter( ParameterSetName = 'Single' )]
         [ValidateNotNullOrEmpty()]
-        [string] $Name
+        [string] $Name,
+
+        # Filters by version of the sql server instance.
+        [Parameter()]
+        [string] $Version
     )
 
     process {
@@ -40,7 +44,7 @@ function Get-Instance {
                 }
 
                 $response | ForEach-Object {
-                    Get-Instance -Name $PSItem
+                    Get-Instance -Name $PSItem -Version:$Version
                 }
             }
             Single {
@@ -91,10 +95,17 @@ function Get-Instance {
                     Write-Warning "'sqllocaldb info' did not return an instance version for $Name"
                 }
                 else {
-                    Write-Verbose "Found LocalDb version $version."
+                    Write-Verbose "Found LocalDb version $( $instance.Version )."
                 }
 
-                $instance | Write-Output
+                if ( -not $Version ) {
+                    $instance | Write-Output
+                } else {
+                    $requestedVersions = Get-Version | ForEach-Object { [string] $_ } | Where-Object { $_.StartsWith( $Version ) }
+                    if ( $instance.Version -in $requestedVersions ) {
+                        $instance | Write-Output
+                    }
+                }
             }
             default {
                 Write-Error "ParameterSet $PSItem is not supported"
