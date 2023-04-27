@@ -1,13 +1,13 @@
 class SqlServerVersion : System.Management.Automation.IValidateSetValuesGenerator {
     [String[]] GetValidValues() {
         return (
-            Get-Version |
+            @() + ( Get-Version |
             Select-Object -ExpandProperty Version |
             ForEach-Object {
                 $_ | Write-Output
                 New-Object System.Version $_.Major, $_.Minor | Write-Output
                 New-Object System.Version $_.Major, $_.Minor, $_.Build | Write-Output
-            }
+            }) + ( $null | Write-Output )
         )
     }
 }
@@ -39,8 +39,7 @@ function New-Instance {
         [string] $Name = ( [string](New-Guid) ).Substring(0, 8),
 
         # Specifies the sql server version to use.
-        [Parameter( )]
-        [ValidateNotNullOrEmpty()]
+        [Parameter()]
         [ValidateSet([SqlServerVersion])]
         [string] $Version
     )

@@ -14,12 +14,12 @@ Returns connection parameters to a available localDb.
 
 ### All (Default)
 ```
-Get-LocalDbInstance [<CommonParameters>]
+Get-LocalDbInstance [-Version <String>] [<CommonParameters>]
 ```
 
 ### Single
 ```
-Get-LocalDbInstance [-Name <String>] [<CommonParameters>]
+Get-LocalDbInstance [-Name <String>] [-Version <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,11 +42,26 @@ Version                        v11.0
 ## PARAMETERS
 
 ### -Name
-Specifies the name of the instance.
+Filters by name of the sql server instance.
 
 ```yaml
 Type: String
 Parameter Sets: Single
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Version
+Filters by version of the sql server instance.
+
+```yaml
+Type: String
+Parameter Sets: (All)
 Aliases:
 
 Required: False
