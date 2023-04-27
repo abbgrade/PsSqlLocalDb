@@ -16,6 +16,14 @@ Describe New-Instance {
             $Instance.Version | Should -Not -BeNullOrEmpty
         }
 
+        It 'Returns values with null version' {
+            $Instance = New-LocalDbInstance -Version:$null
+
+            $Instance | Should -Not -BeNullOrEmpty
+            $Instance.Name | Should -Not -BeNullOrEmpty
+            $Instance.Version | Should -Not -BeNullOrEmpty
+        }
+
         Context Version {
 
             BeforeAll {
@@ -44,6 +52,13 @@ Describe New-Instance {
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $Version
+            }
+        }
+
+        Context EmptyVersion {
+            It works {
+                [System.Version] $Version = $null
+                $Instance = New-LocalDbInstance -Version:$Version
             }
         }
 

@@ -88,7 +88,7 @@ function Get-Instance {
                     $instance.Name = $Name
                 }
                 else {
-                    Write-Verbose "Found LocalDb instance $name."
+                    Write-Verbose "Found LocalDb instance $( $instance.Name )."
                 }
 
                 if ( -Not $instance.Version ) {
@@ -101,7 +101,7 @@ function Get-Instance {
                 if ( -not $Version ) {
                     $instance | Write-Output
                 } else {
-                    $requestedVersions = Get-Version | ForEach-Object { [string] $_ } | Where-Object { $_.StartsWith( $Version ) }
+                    $requestedVersions = Get-Version | ForEach-Object { [string] $_.Version } | Where-Object { $_.StartsWith( $Version ) }
                     if ( $instance.Version -in $requestedVersions ) {
                         $instance | Write-Output
                     }
