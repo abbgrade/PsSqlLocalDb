@@ -101,7 +101,7 @@ PrivateData = @{
         LicenseUri = 'https://github.com/abbgrade/PsSqlLocalDb/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/abbgrade/PsSqlLocalDb'
+        ProjectUri = 'https://abbgrade.github.io/PsSqlLocalDb/'
 
         # A URL to an icon representing this module.
         # IconUri = ''
