@@ -55,6 +55,13 @@ Describe New-Instance {
             }
         }
 
+        Context EmptyVersion {
+            It works {
+                [System.Version] $Version = $null
+                $Instance = New-LocalDbInstance -Version:$Version
+            }
+        }
+
         It 'Throws with unavailable version' {
             {
                 New-LocalDbInstance -Version 47.11
