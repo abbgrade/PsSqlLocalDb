@@ -33,7 +33,7 @@ Copyright = '(c) Steffen Kampmann. All rights reserved.'
 Description = 'PowerShell Wrapper for SqlLocalDB Utility'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '7.2.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
