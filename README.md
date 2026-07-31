@@ -50,7 +50,7 @@ You can build the module using the VS Code build task or with the command `Invok
 
 1. Create a release branch using git-flow.
 2. Update the version number in the module manifest.
-3. Extend the changelog in this readme.
+3. Extend the changelog in `CHANGELOG.md`.
 4. If you want to create a pre-release.
    1. Push the release branch to GitHub, to publish the pre-release to PsGallery.
 5. Finish release using git-flow.
