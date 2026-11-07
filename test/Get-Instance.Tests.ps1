@@ -6,8 +6,9 @@ Describe Get-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    Context Parsing {
+    Context 'UnitTests' {
         It 'parses fields by label and matches version components exactly' -Tag UnitTest {
+            # Arrange
             Mock -CommandName sqllocaldb -MockWith {
                 $global:LASTEXITCODE = 0
                 if ($args.Count -eq 1) {
@@ -23,8 +24,10 @@ Describe Get-Instance {
                 )
             } -ModuleName PsSqlLocalDb
 
+            # Act
             $result = @(Get-LocalDbInstance -Version '15.0')
 
+            # Assert
             $result.Count | Should -Be 1
             $result[0].Name | Should -Be 'TestInstance'
             $result[0].Version | Should -Be ([version]'15.0.4153.1')
@@ -33,19 +36,22 @@ Describe Get-Instance {
         }
 
         It 'reports a failed utility command' -Tag UnitTest {
+            # Arrange
             Mock -CommandName sqllocaldb -MockWith {
                 $global:LASTEXITCODE = 1
                 'utility failed'
             } -ModuleName PsSqlLocalDb
 
+            # Act
             $result = Get-LocalDbInstance -ErrorAction SilentlyContinue
 
+            # Assert
             $result | Should -BeNullOrEmpty
             Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
         }
     }
 
-    Context FirstInstance {
+    Context 'IntegrationTests' {
         BeforeAll {
             $FirstInstance = New-LocalDbInstance
         }
@@ -54,40 +60,27 @@ Describe Get-Instance {
             $FirstInstance | Remove-LocalDbInstance
         }
 
-        Context LocalDb {
+        It 'returns values for all available instances' -Tag IntegrationTest {
+            # Act
+            $result = Get-LocalDbInstance
 
-            It 'Returns values' -Tag IntegrationTest {
-                # Act
-                $result = Get-LocalDbInstance
+            # Assert
+            $result | Should -Not -BeNullOrEmpty
+            $result.Name | Should -Not -BeNullOrEmpty
+        }
 
-                # Assert
-                $result | Should -Not -BeNullOrEmpty
-                $result.Name | Should -Not -BeNullOrEmpty
-            }
+        It 'returns a specific instance' -Tag IntegrationTest {
+            # Arrange
+            $instanceName = $FirstInstance.Name
 
-            Context NewInstance {
-                BeforeAll {
-                    $Instance = New-LocalDbInstance
-                }
+            # Act
+            $result = Get-LocalDbInstance -Name $instanceName
 
-                AfterAll {
-                    $Instance | Remove-LocalDbInstance
-                }
-
-                It 'Returns a specific instance' -Tag IntegrationTest {
-                    # Arrange
-                    $instanceName = $Instance.Name
-
-                    # Act
-                    $result = Get-LocalDbInstance -Name $instanceName
-
-                    # Assert
-                    $result.Count | Should -Be 1
-                    $result.Name | Should -Be $instanceName
-                    $result.Version | Should -Not -BeNullOrEmpty
-                    $result.Version | Should -BeOfType System.Version
-                }
-            }
+            # Assert
+            $result.Count | Should -Be 1
+            $result.Name | Should -Be $instanceName
+            $result.Version | Should -Not -BeNullOrEmpty
+            $result.Version | Should -BeOfType System.Version
         }
     }
 }

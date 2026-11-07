@@ -6,30 +6,37 @@ Describe Remove-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    It 'does not delete an instance when stopping it fails' -Tag UnitTest {
-        Mock -CommandName sqllocaldb -MockWith {
-            $global:LASTEXITCODE = 1
-            'stop failed'
-        } -ModuleName PsSqlLocalDb
+    Context 'UnitTests' {
+        It 'does not delete an instance when stopping it fails' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                $global:LASTEXITCODE = 1
+                'stop failed'
+            } -ModuleName PsSqlLocalDb
 
-        { Remove-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop } | Should -Throw
-        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+            # Act
+            $action = { Remove-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop }
+
+            # Assert
+            $action | Should -Throw
+            Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+        }
+
+        It 'does not stop or delete an instance when WhatIf is specified' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                throw 'sqllocaldb should not be invoked'
+            } -ModuleName PsSqlLocalDb
+
+            # Act
+            Remove-LocalDbInstance -Name 'TestInstance' -WhatIf
+
+            # Assert
+            Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+        }
     }
 
-    It 'does not stop or delete an instance when WhatIf is specified' -Tag UnitTest {
-        # Arrange
-        Mock -CommandName sqllocaldb -MockWith {
-            throw 'sqllocaldb should not be invoked'
-        } -ModuleName PsSqlLocalDb
-
-        # Act
-        Remove-LocalDbInstance -Name 'TestInstance' -WhatIf
-
-        # Assert
-        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
-    }
-
-    Context LocalDb {
+    Context 'IntegrationTests' {
         AfterEach {
             if ($Instance -and (Get-LocalDbInstance | Where-Object Name -EQ $Instance.Name)) {
                 $Instance | Remove-LocalDbInstance -ErrorAction Stop
