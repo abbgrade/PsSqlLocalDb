@@ -6,6 +6,16 @@ Describe Remove-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
+    It 'does not delete an instance when stopping it fails' -Tag UnitTest {
+        Mock -CommandName sqllocaldb -MockWith {
+            $global:LASTEXITCODE = 1
+            'stop failed'
+        } -ModuleName PsSqlLocalDb
+
+        { Remove-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop } | Should -Throw
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+    }
+
     Context LocalDb {
         AfterEach {
             if ($Instance -and (Get-LocalDbInstance | Where-Object Name -EQ $Instance.Name)) {
@@ -16,7 +26,7 @@ Describe Remove-Instance {
         It 'removes a <State> instance' -TestCases @(
             @{ State = 'running'; StopBeforeRemoval = $false }
             @{ State = 'stopped'; StopBeforeRemoval = $true }
-        ) {
+        ) -Tag IntegrationTest {
             param($State, $StopBeforeRemoval)
 
             # Arrange
