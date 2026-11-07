@@ -17,28 +17,35 @@ function New-Instance {
     <#
 
     .SYNOPSIS
-    Creates a new sqllocaldb instance.
+    Creates and starts a SQL Server LocalDB instance.
+
+    .DESCRIPTION
+    Creates a LocalDB instance, starts it, and returns its instance details.
+    If no name is specified, a random name is generated. Use Get-LocalDbVersion
+    to see the installed versions that can be used with the Version parameter.
+    Supports ShouldProcess, so use -WhatIf to preview the operation or
+    -Confirm to be prompted before it runs.
 
     .EXAMPLE
     PS> New-LocalDbInstance -Name 'foobar'
 
-    [PSCustomObject]
+    Creates and starts an instance named 'foobar', then returns its details.
 
-    Name                           Value
-    ----                           -----
-    Name                           foobar
-    Version                        15.0.4153.1
+    .EXAMPLE
+    PS> New-LocalDbInstance -Name 'foobar' -WhatIf
+
+    Shows the create operation without creating or starting the instance.
 
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
-        # Specifies the name of the instance to create.
+        # Name for the new instance; defaults to a random eight-character name.
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [string] $Name = ( [string](New-Guid) ).Substring(0, 8),
 
-        # Specifies the sql server version to use.
+        # Installed SQL Server LocalDB version to use; defaults to SqlLocalDB's version.
         [Parameter()]
         [ValidateSet([SqlServerVersion])]
         [string] $Version
@@ -46,19 +53,29 @@ function New-Instance {
 
     process {
         Write-Verbose "Create sqllocaldb instance $Name."
-        $response = sqllocaldb create $Name $Version -s
+        $arguments = @('create', $Name)
+        if ($Version) {
+            $arguments += $Version
+        }
+        $arguments += '-s'
 
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to create sqllocaldb instance $Name."
+        if (-not $PSCmdlet.ShouldProcess($Name, 'Create LocalDB instance')) {
+            return
+        }
+
+        $result = Invoke-SqlLocalDb -ArgumentList $arguments
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        if (-not $result.Succeeded) {
+            Write-SqlLocalDbError -Message "Failed to create LocalDB instance '$Name'." -Details $result.Error
+            return
         }
 
         $instance = Get-Instance -Name $Name
-        if ( $instance -and $instance.Version -ne '0.0' ) {
-            $instance | Write-Output
+        if ($null -eq $instance) {
+            Write-SqlLocalDbError -Message "Created LocalDB instance '$Name', but could not retrieve its details."
+            return
         }
-        else {
-            Write-Error 'Failed to return new sqllocaldb instance.'
-        }
+
+        $instance
     }
 }

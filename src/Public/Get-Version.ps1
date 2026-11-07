@@ -3,10 +3,12 @@ function Get-Version {
     <#
 
     .SYNOPSIS
-    Return localdb versions
+    Gets installed SQL Server LocalDB versions.
 
     .DESCRIPTION
-    Selects the installed localdb versions, that can be used to create new instances.
+    Returns the names and version numbers of SQL Server LocalDB versions
+    installed on the computer. These versions can be used when creating
+    instances with New-LocalDbInstance.
 
     .EXAMPLE
 
@@ -23,23 +25,30 @@ function Get-Version {
     param (
     )
 
-    Write-Verbose "Get sqllocaldb instances."
-    $response = sqllocaldb versions
-
-    $response | Where-Object { $_ } | Write-Verbose
-    if ( -not $? ) {
-        Write-Error "Failed to get info sqllocaldb for instance $Name."
+    Write-Verbose 'Get sqllocaldb versions.'
+    $result = Invoke-SqlLocalDb -ArgumentList @('versions')
+    if (-not $result.Succeeded) {
+        Write-SqlLocalDbError -Message 'Failed to get LocalDB versions.' -Details $result.Error
+        return
     }
 
-    $response | ForEach-Object {
-        if ( $_ -match '(.*) \((.*)\)' ) {
+    foreach ($line in $result.Output) {
+        $line = "$line".Trim()
+        if (-not $line) {
+            continue
+        }
+
+        $parsedVersion = $null
+        if ($line -match '^(?<Name>.+?)\s+\((?<Version>\d+(?:\.\d+){1,3})\)$' -and
+            [version]::TryParse($matches.Version, [ref]$parsedVersion)) {
             $version = [PSCustomObject] @{
-                Name = $matches[1]
-                Version = New-Object System.Version $matches[2]
+                Name = $matches.Name
+                Version = $parsedVersion
             }
-            $version | Write-Output
-        } else {
-            Write-Warning "unexpected output $_"
+            $version
+        }
+        else {
+            Write-Warning "Unexpected output from 'sqllocaldb versions': $line"
         }
     }
 }

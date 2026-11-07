@@ -3,10 +3,11 @@ function Test-Utility {
     <#
 
     .SYNOPSIS
-    Tests if a localDb-based SQL Server can be created.
+    Tests whether the SqlLocalDB utility is available.
 
     .DESCRIPTION
-    Uses [SqlLocalDB Utility](https://docs.microsoft.com/en-us/sql/tools/sqllocaldb-utility?view=sql-server-ver15).
+    Runs the SqlLocalDB versions command and returns $true if it succeeds,
+    otherwise returns $false.
 
     .EXAMPLE
     PS> Test-LocalDbUtility
@@ -21,18 +22,8 @@ function Test-Utility {
     param ()
 
     process {
-        try {
-            $response = sqllocaldb
-
-            $response | Where-Object { $_ } | Write-Verbose
-            if ( -not $? ) {
-                Write-Error "Failed to test sqllocaldb util."
-            }
-
-            return $true
-        }
-        catch {
-            return $false
-        }
+        $result = Invoke-SqlLocalDb -ArgumentList @('versions')
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        return [bool] $result.Succeeded
     }
 }

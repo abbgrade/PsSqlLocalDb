@@ -12,7 +12,7 @@
 RootModule = 'PsSqlLocalDb.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.4.0'
+ModuleVersion = '0.5.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) Steffen Kampmann. All rights reserved.'
 Description = 'PowerShell Wrapper for SqlLocalDB Utility'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '7.2.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -129,4 +129,3 @@ PrivateData = @{
 DefaultCommandPrefix = 'LocalDb'
 
 }
-

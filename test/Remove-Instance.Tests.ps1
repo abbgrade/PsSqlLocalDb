@@ -6,25 +6,55 @@ Describe Remove-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
+    It 'does not delete an instance when stopping it fails' -Tag UnitTest {
+        Mock -CommandName sqllocaldb -MockWith {
+            $global:LASTEXITCODE = 1
+            'stop failed'
+        } -ModuleName PsSqlLocalDb
+
+        { Remove-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop } | Should -Throw
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+    }
+
+    It 'does not stop or delete an instance when WhatIf is specified' -Tag UnitTest {
+        # Arrange
+        Mock -CommandName sqllocaldb -MockWith {
+            throw 'sqllocaldb should not be invoked'
+        } -ModuleName PsSqlLocalDb
+
+        # Act
+        Remove-LocalDbInstance -Name 'TestInstance' -WhatIf
+
+        # Assert
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+    }
+
     Context LocalDb {
-        BeforeEach {
+        AfterEach {
+            if ($Instance -and (Get-LocalDbInstance | Where-Object Name -EQ $Instance.Name)) {
+                $Instance | Remove-LocalDbInstance -ErrorAction Stop
+            }
+        }
+
+        It 'removes a <State> instance' -TestCases @(
+            @{ State = 'running'; StopBeforeRemoval = $false }
+            @{ State = 'stopped'; StopBeforeRemoval = $true }
+        ) -Tag IntegrationTest {
+            param($State, $StopBeforeRemoval)
+
+            # Arrange
             $Instance = New-LocalDbInstance
-        }
+            $instanceName = $Instance.Name
+            if ($StopBeforeRemoval) {
+                $Instance | Stop-LocalDbInstance -ErrorAction Stop
+            }
 
-        It 'removes a running instance' {
-            $Instance | Remove-LocalDbInstance
-            {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
-            } | Should -Throw -Because 'a removed instance should not be used for connections'
-        }
+            # Act
+            $Instance | Remove-LocalDbInstance -ErrorAction Stop
 
-        It 'removes a stopped instance' {
-
-            $Instance | Stop-LocalDbInstance
-            $Instance | Remove-LocalDbInstance
-            {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
-            } | Should -Throw -Because 'a removed instance should not be used for connections'
+            # Assert
+            $remainingInstances = @(Get-LocalDbInstance | Where-Object Name -EQ $instanceName)
+            $remainingInstances | Should -BeNullOrEmpty
         }
     }
 }

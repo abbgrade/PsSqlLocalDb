@@ -8,22 +8,27 @@ schema: 2.0.0
 # Get-LocalDbInstance
 
 ## SYNOPSIS
-Returns connection parameters to a available localDb.
+Gets SQL Server LocalDB instance details.
 
 ## SYNTAX
 
 ### All (Default)
 ```
-Get-LocalDbInstance [-Version <String>] [<CommonParameters>]
+Get-LocalDbInstance [-Version <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### Single
 ```
-Get-LocalDbInstance [-Name <String>] [-Version <String>] [<CommonParameters>]
+Get-LocalDbInstance [-Name <String>] [-Version <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Uses \[SqlLocalDB Utility\](https://docs.microsoft.com/en-us/sql/tools/sqllocaldb-utility?view=sql-server-ver15) to get info about the available local db.
+Lists available LocalDB instances or gets details for one named instance.
+Each result includes the instance name and SQL Server version, and the named
+pipe used to connect when available.
+Use Version to filter by a version
+prefix.
 
 ## EXAMPLES
 
@@ -39,10 +44,20 @@ Name                           Value
 Name                           MSSQLLocalDB
 Version                        v11.0
 
+Lists all available instances.
+
+### EXAMPLE 2
+```
+Get-LocalDbInstance -Name 'MSSQLLocalDB'
+```
+
+Gets details for the MSSQLLocalDB instance.
+
 ## PARAMETERS
 
 ### -Name
-Filters by name of the sql server instance.
+Gets details for this named instance.
+If omitted, lists all instances.
 
 ```yaml
 Type: String
@@ -57,12 +72,27 @@ Accept wildcard characters: False
 ```
 
 ### -Version
-Filters by version of the sql server instance.
+Filters results by a SQL Server version prefix, such as '15.0'.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named

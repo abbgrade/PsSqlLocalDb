@@ -8,16 +8,22 @@ schema: 2.0.0
 # Stop-LocalDbInstance
 
 ## SYNOPSIS
-stops a sqllocaldb instance.
+Stops a SQL Server LocalDB instance.
 
 ## SYNTAX
 
 ```
-Stop-LocalDbInstance [-Name] <String> [-Force] [<CommonParameters>]
+Stop-LocalDbInstance [-Name] <String> [-Force] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Stops the specified instance using the SqlLocalDB utility.
+Use Force to
+terminate processes that are accessing the instance.
+Supports ShouldProcess,
+so use -WhatIf to preview the operation or -Confirm to be prompted before it
+runs.
 
 ## EXAMPLES
 
@@ -27,10 +33,19 @@ $instance = New-LocalDbInstance
 PS> $instance | Stop-LocalDbInstance
 ```
 
+Stops the instance represented by the object.
+
+### EXAMPLE 2
+```
+Stop-LocalDbInstance -Name 'foobar' -WhatIf
+```
+
+Shows the stop operation without stopping the instance.
+
 ## PARAMETERS
 
 ### -Name
-Specifies the name of the instance to stop.
+Name of the LocalDB instance to stop; accepts instance objects by Name.
 
 ```yaml
 Type: String
@@ -45,7 +60,7 @@ Accept wildcard characters: False
 ```
 
 ### -Force
-{{ Fill Force Description }}
+Terminates processes accessing the instance so it can be stopped.
 
 ```yaml
 Type: SwitchParameter
@@ -55,6 +70,52 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -3,17 +3,29 @@ function Remove-Instance {
     <#
 
     .SYNOPSIS
-    Removes a sqllocaldb instance.
+    Stops and removes a SQL Server LocalDB instance.
+
+    .DESCRIPTION
+    Stops the specified instance, then deletes it using the
+    SqlLocalDB utility. Supports ShouldProcess, so use -WhatIf to preview
+    the operation or -Confirm to be prompted before it runs.
 
     .EXAMPLE
     PS> $instance = New-LocalDbInstance
     PS> $instance | Remove-LocalDbInstance
 
+    Removes the instance represented by the object.
+
+    .EXAMPLE
+    PS> Remove-LocalDbInstance -Name 'foobar' -WhatIf
+
+    Shows the removal operation without stopping or deleting the instance.
+
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
-        # Specifies the name of the instance to remove.
+        # Name of the LocalDB instance to remove; accepts instance objects by Name.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [string] $Name
@@ -21,13 +33,15 @@ function Remove-Instance {
 
     process {
         Write-Verbose "Remove sqllocaldb instance $Name."
-        Stop-Instance -Name $Name
 
-        $response = sqllocaldb delete $Name
+        if ($PSCmdlet.ShouldProcess($Name, 'Remove LocalDB instance')) {
+            Stop-Instance -Name $Name -Confirm:$false -ErrorAction Stop
 
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to delete sqllocaldb instance $Name."
+            $result = Invoke-SqlLocalDb -ArgumentList @('delete', $Name)
+            $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+            if (-not $result.Succeeded) {
+                Write-SqlLocalDbError -Message "Failed to delete LocalDB instance '$Name'." -Details $result.Error
+            }
         }
 
     }
