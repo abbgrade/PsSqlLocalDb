@@ -8,7 +8,7 @@ schema: 2.0.0
 # Test-LocalDbUtility
 
 ## SYNOPSIS
-Tests if a localDb-based SQL Server can be created.
+Tests whether the SqlLocalDB utility is available.
 
 ## SYNTAX
 
@@ -17,7 +17,8 @@ Test-LocalDbUtility [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Uses \[SqlLocalDB Utility\](https://docs.microsoft.com/en-us/sql/tools/sqllocaldb-utility?view=sql-server-ver15).
+Runs the SqlLocalDB versions command and returns $true if it succeeds,
+otherwise returns $false.
 
 ## EXAMPLES
 

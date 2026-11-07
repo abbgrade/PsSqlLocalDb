@@ -3,24 +3,35 @@ function Stop-Instance {
     <#
 
     .SYNOPSIS
-    stops a sqllocaldb instance.
+    Stops a SQL Server LocalDB instance.
+
+    .DESCRIPTION
+    Stops the specified instance using the SqlLocalDB utility. Use Force to
+    terminate processes that are accessing the instance. Supports ShouldProcess,
+    so use -WhatIf to preview the operation or -Confirm to be prompted before it
+    runs.
 
     .EXAMPLE
     PS> $instance = New-LocalDbInstance
     PS> $instance | Stop-LocalDbInstance
 
+    Stops the instance represented by the object.
+
     .EXAMPLE
     PS> Stop-LocalDbInstance -Name 'foobar' -WhatIf
+
+    Shows the stop operation without stopping the instance.
 
     #>
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        # Specifies the name of the instance to stop.
+        # Name of the LocalDB instance to stop; accepts instance objects by Name.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [string] $Name,
 
+        # Terminates processes accessing the instance so it can be stopped.
         [Parameter()]
         [switch] $Force
     )

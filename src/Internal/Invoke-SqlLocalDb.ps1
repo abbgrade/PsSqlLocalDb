@@ -9,10 +9,6 @@ function Invoke-SqlLocalDb {
     indicates whether the command succeeded and includes an error message on
     failure. An invocation exception is also represented as a failed result.
 
-    .PARAMETER ArgumentList
-    Arguments passed to `sqllocaldb`. An empty list invokes the utility without
-    arguments.
-
     .OUTPUTS
     PSCustomObject
     A result with Succeeded, Output, ExitCode, and Error properties.
@@ -28,6 +24,7 @@ function Invoke-SqlLocalDb {
     #>
     [CmdletBinding()]
     param (
+        # Arguments passed to sqllocaldb; an empty list invokes it without arguments.
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
         [string[]] $ArgumentList

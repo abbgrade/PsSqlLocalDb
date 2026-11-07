@@ -3,10 +3,12 @@ function Get-Version {
     <#
 
     .SYNOPSIS
-    Return localdb versions
+    Gets installed SQL Server LocalDB versions.
 
     .DESCRIPTION
-    Selects the installed localdb versions, that can be used to create new instances.
+    Returns the names and version numbers of SQL Server LocalDB versions
+    installed on the computer. These versions can be used when creating
+    instances with New-LocalDbInstance.
 
     .EXAMPLE
 

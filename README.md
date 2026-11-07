@@ -1,34 +1,44 @@
-# Readme
+# PsSqlLocalDb
 
-PsSqlLocalDb is a PowerShell wrapper for the SqlLocalDB utility.
+PsSqlLocalDb is a PowerShell module for managing SQL Server LocalDB instances
+through the [SqlLocalDB utility](https://learn.microsoft.com/sql/tools/sqllocaldb-utility).
 
-For details, visit the [GitHub Pages](https://abbgrade.github.io/PsSqlLocalDb/).
+## Requirements
 
-## Usage
-
-See [the command reference](./docs/) for descriptions and examples.
-
-## Changelog
-
-See the [changelog](./CHANGELOG.md) file.
+- Windows with SQL Server LocalDB installed.
+- PowerShell 7.2 or later.
 
 ## Installation
 
-This module can be installed from [PsGallery](https://www.powershellgallery.com/packages/PsSqlLocalDb).
+The module is available from the [PowerShell Gallery](https://www.powershellgallery.com/packages/PsSqlLocalDb):
 
 ```powershell
-Install-Module -Name PsSqlLocalDb -AllowPrerelease
+Install-Module -Name PsSqlLocalDb
 ```
 
-Alternatively it can be built and installed from the sources:
-
-1. Install the development dependencies
-2. Download or clone it from GitHub
-3. Run the installation task:
+To build and install from source, clone the repository, install
+[InvokeBuild](https://github.com/nightroman/Invoke-Build), then run:
 
 ```powershell
 Invoke-Build Install
 ```
+
+## Usage
+
+Import the module and check the installed LocalDB versions and instances:
+
+```powershell
+Import-Module PsSqlLocalDb
+Get-LocalDbVersion
+Get-LocalDbInstance
+```
+
+See the [command reference](https://abbgrade.github.io/PsSqlLocalDb/) for all
+commands, parameters, and examples.
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
 
 ## Development
 
