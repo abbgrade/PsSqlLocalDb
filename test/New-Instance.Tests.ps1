@@ -9,16 +9,20 @@ Describe New-Instance {
     Context LocalDb {
 
         It 'Returns values' {
+            # Act
             $Instance = New-LocalDbInstance
 
+            # Assert
             $Instance | Should -Not -BeNullOrEmpty
             $Instance.Name | Should -Not -BeNullOrEmpty
             $Instance.Version | Should -Not -BeNullOrEmpty
         }
 
         It 'Returns values with null version' {
+            # Act
             $Instance = New-LocalDbInstance -Version:$null
 
+            # Assert
             $Instance | Should -Not -BeNullOrEmpty
             $Instance.Name | Should -Not -BeNullOrEmpty
             $Instance.Version | Should -Not -BeNullOrEmpty
@@ -31,24 +35,39 @@ Describe New-Instance {
             }
 
             It 'Creates with specified full version' {
-                $Instance = New-LocalDbInstance -Version $Version
+                # Arrange
+                $expectedVersion = $Version
 
+                # Act
+                $Instance = New-LocalDbInstance -Version $expectedVersion
+
+                # Assert
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
-                $Instance.Version | Should -Be $Version
+                $Instance.Version | Should -Be $expectedVersion
             }
 
             It 'Creates with specified major.minor version' {
-                $Instance = New-LocalDbInstance -Version "$( $Version.Major ).$( $Version.Minor )"
+                # Arrange
+                $versionInput = "$( $Version.Major ).$( $Version.Minor )"
 
+                # Act
+                $Instance = New-LocalDbInstance -Version $versionInput
+
+                # Assert
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $Version
             }
 
             It 'Creates with specified major.minor.build version' {
-                $Instance = New-LocalDbInstance -Version "$( $Version.Major ).$( $Version.Minor ).$( $Version.Build )"
+                # Arrange
+                $versionInput = "$( $Version.Major ).$( $Version.Minor ).$( $Version.Build )"
 
+                # Act
+                $Instance = New-LocalDbInstance -Version $versionInput
+
+                # Assert
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $Version
@@ -57,15 +76,24 @@ Describe New-Instance {
 
         Context EmptyVersion {
             It works {
+                # Arrange
                 [System.Version] $Version = $null
+
+                # Act
                 $Instance = New-LocalDbInstance -Version:$Version
+
+                # Assert
             }
         }
 
         It 'Throws with unavailable version' {
-            {
+            # Act
+            $action = {
                 New-LocalDbInstance -Version 47.11
-            } | Should -Throw
+            }
+
+            # Assert
+            $action | Should -Throw
         }
 
         AfterEach {
@@ -85,7 +113,13 @@ Describe New-Instance {
             }
 
             It 'Connects by DataSource' {
-                $SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )" -ConnectTimeout 30
+                # Arrange
+                $instanceName = $Instance.Name
+
+                # Act
+                $SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )" -ConnectTimeout 30
+
+                # Assert
             }
 
             AfterEach {

@@ -22,14 +22,22 @@ Describe Stop-Instance {
         Context PsSqlClient -Skip:( -Not $PsSqlClient ) {
 
             It 'Stops the instance' {
+                # Arrange
+                $instanceName = $Instance.Name
+
+                # Act
                 $Instance | Stop-LocalDbInstance
 
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
+                # Assert
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )"
             }
 
             It 'Stops used instance' {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
+                # Arrange
+                $instanceName = $Instance.Name
+                Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )"
 
+                # Act
                 $Instance | Stop-LocalDbInstance -Force
             }
         }

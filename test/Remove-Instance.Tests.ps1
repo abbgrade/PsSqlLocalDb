@@ -12,19 +12,28 @@ Describe Remove-Instance {
         }
 
         It 'removes a running instance' {
+            # Arrange
+            $instanceName = $Instance.Name
+
+            # Act
             $Instance | Remove-LocalDbInstance
-            {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
-            } | Should -Throw -Because 'a removed instance should not be used for connections'
+
+            # Assert
+            $remainingInstances = @(Get-LocalDbInstance | Where-Object Name -EQ $instanceName)
+            $remainingInstances | Should -BeNullOrEmpty
         }
 
         It 'removes a stopped instance' {
+            # Arrange
+            $instanceName = $Instance.Name
 
+            # Act
             $Instance | Stop-LocalDbInstance
             $Instance | Remove-LocalDbInstance
-            {
-                Connect-TSqlInstance -DataSource "(LocalDb)\$( $Instance.Name )"
-            } | Should -Throw -Because 'a removed instance should not be used for connections'
+
+            # Assert
+            $remainingInstances = @(Get-LocalDbInstance | Where-Object Name -EQ $instanceName)
+            $remainingInstances | Should -BeNullOrEmpty
         }
     }
 }

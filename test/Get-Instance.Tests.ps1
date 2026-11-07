@@ -18,8 +18,10 @@ Describe Get-Instance {
         Context LocalDb {
 
             It 'Returns values' {
+                # Act
                 $result = Get-LocalDbInstance
 
+                # Assert
                 $result | Should -Not -BeNullOrEmpty
                 $result.Name | Should -Not -BeNullOrEmpty
             }
@@ -34,9 +36,15 @@ Describe Get-Instance {
                 }
 
                 It 'Returns a specific instance' {
-                    $result = Get-LocalDbInstance -Name $Instance.Name
+                    # Arrange
+                    $instanceName = $Instance.Name
+
+                    # Act
+                    $result = Get-LocalDbInstance -Name $instanceName
+
+                    # Assert
                     $result.Count | Should -Be 1
-                    $result.Name | Should -Be $Instance.Name
+                    $result.Name | Should -Be $instanceName
                     $result.Version | Should -Not -BeNullOrEmpty
                     $result.Version | Should -BeOfType System.Version
                 }

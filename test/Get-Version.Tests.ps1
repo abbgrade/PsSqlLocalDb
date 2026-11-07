@@ -7,8 +7,10 @@ Describe Get-Version {
     }
 
     It 'Returns values' {
+        # Act
         $result = Get-LocalDbVersion
 
+        # Assert
         $result | Should -Not -BeNullOrEmpty
         $result | ForEach-Object {
             $result.Name | Should -Not -BeNullOrEmpty

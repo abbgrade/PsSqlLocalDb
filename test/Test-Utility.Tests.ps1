@@ -7,7 +7,14 @@ Describe Test-Utility {
     }
 
     It works {
-        Test-LocalDbUtility | Should -BeIn $true, $false
+        # Arrange
+        $expectedValues = @($true, $false)
+
+        # Act
+        $result = Test-LocalDbUtility
+
+        # Assert
+        $result | Should -BeIn $expectedValues
     }
 
 }
