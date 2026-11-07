@@ -9,9 +9,12 @@ function Stop-Instance {
     PS> $instance = New-LocalDbInstance
     PS> $instance | Stop-LocalDbInstance
 
+    .EXAMPLE
+    PS> Stop-LocalDbInstance -Name 'foobar' -WhatIf
+
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         # Specifies the name of the instance to stop.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
@@ -30,10 +33,12 @@ function Stop-Instance {
             $arguments += '-k'
         }
 
-        $result = Invoke-SqlLocalDb -ArgumentList $arguments
-        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
-        if (-not $result.Succeeded) {
-            Write-SqlLocalDbError -Message "Failed to stop LocalDB instance '$Name'." -Details $result.Error
+        if ($PSCmdlet.ShouldProcess($Name, 'Stop LocalDB instance')) {
+            $result = Invoke-SqlLocalDb -ArgumentList $arguments
+            $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+            if (-not $result.Succeeded) {
+                Write-SqlLocalDbError -Message "Failed to stop LocalDB instance '$Name'." -Details $result.Error
+            }
         }
     }
 }

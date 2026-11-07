@@ -13,8 +13,8 @@ Creates a new sqllocaldb instance.
 ## SYNTAX
 
 ```
-New-LocalDbInstance [[-Name] <String>] [[-Version] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+New-LocalDbInstance [[-Name] <String>] [[-Version] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,11 @@ Name                           Value
 ----                           -----
 Name                           foobar
 Version                        15.0.4153.1
+
+### EXAMPLE 2
+```
+New-LocalDbInstance -Name 'foobar' -WhatIf
+```
 
 ## PARAMETERS
 
@@ -61,6 +66,37 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

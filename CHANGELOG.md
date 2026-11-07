@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Specified minimum powershell version.
 - Improved LocalDB command failure reporting, instance information parsing, and version filtering.
+- Added `-WhatIf` and `-Confirm` support to instance creation, stopping, and removal commands.
 
 ### Fixed
 
