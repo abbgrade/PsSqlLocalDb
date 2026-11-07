@@ -6,9 +6,21 @@ Describe New-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
+    It 'does not query the instance after a failed create command' -Tag UnitTest {
+        Mock -CommandName sqllocaldb -MockWith {
+            $global:LASTEXITCODE = 1
+            'create failed'
+        } -ModuleName PsSqlLocalDb
+
+        $result = New-LocalDbInstance -Name 'FailedCreate' -ErrorAction SilentlyContinue
+
+        $result | Should -BeNullOrEmpty
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+    }
+
     Context LocalDb {
 
-        It 'Returns values' {
+        It 'Returns values' -Tag IntegrationTest {
             # Act
             $Instance = New-LocalDbInstance
 
@@ -18,7 +30,7 @@ Describe New-Instance {
             $Instance.Version | Should -Not -BeNullOrEmpty
         }
 
-        It 'Returns values with null version' {
+        It 'Returns values with null version' -Tag IntegrationTest {
             # Act
             $Instance = New-LocalDbInstance -Version:$null
 
@@ -34,7 +46,7 @@ Describe New-Instance {
                 $Version = Get-LocalDbVersion | Select-Object -First 1 -ExpandProperty Version
             }
 
-            It 'Creates with specified full version' {
+            It 'Creates with specified full version' -Tag IntegrationTest {
                 # Arrange
                 $expectedVersion = $Version
 
@@ -47,7 +59,7 @@ Describe New-Instance {
                 $Instance.Version | Should -Be $expectedVersion
             }
 
-            It 'Creates with specified major.minor version' {
+            It 'Creates with specified major.minor version' -Tag IntegrationTest {
                 # Arrange
                 $versionInput = "$( $Version.Major ).$( $Version.Minor )"
 
@@ -60,7 +72,7 @@ Describe New-Instance {
                 $Instance.Version | Should -Be $Version
             }
 
-            It 'Creates with specified major.minor.build version' {
+            It 'Creates with specified major.minor.build version' -Tag IntegrationTest {
                 # Arrange
                 $versionInput = "$( $Version.Major ).$( $Version.Minor ).$( $Version.Build )"
 
@@ -75,7 +87,7 @@ Describe New-Instance {
         }
 
         Context EmptyVersion {
-            It works {
+            It works -Tag IntegrationTest {
                 # Arrange
                 [System.Version] $Version = $null
 
@@ -86,7 +98,7 @@ Describe New-Instance {
             }
         }
 
-        It 'Throws with unavailable version' {
+        It 'Throws with unavailable version' -Tag IntegrationTest {
             # Act
             $action = {
                 New-LocalDbInstance -Version 47.11
@@ -112,7 +124,7 @@ Describe New-Instance {
                 $Instance = New-LocalDbInstance
             }
 
-            It 'Connects by DataSource' {
+            It 'Connects by DataSource' -Tag IntegrationTest {
                 # Arrange
                 $instanceName = $Instance.Name
 

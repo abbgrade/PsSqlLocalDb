@@ -21,18 +21,8 @@ function Test-Utility {
     param ()
 
     process {
-        try {
-            $response = sqllocaldb
-
-            $response | Where-Object { $_ } | Write-Verbose
-            if ( -not $? ) {
-                Write-Error "Failed to test sqllocaldb util."
-            }
-
-            return $true
-        }
-        catch {
-            return $false
-        }
+        $result = Invoke-SqlLocalDb -ArgumentList @('versions')
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        return [bool] $result.Succeeded
     }
 }

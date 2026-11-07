@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Specified minimum powershell version.
+- Improved LocalDB command failure reporting, instance information parsing, and version filtering.
+
+### Fixed
+
+- Detect nonzero SqlLocalDB exit codes when checking utility availability or managing instances.
+- Parse installed version output more strictly and report malformed lines.
 
 ## [0.4.0] - 2023-03-07
 

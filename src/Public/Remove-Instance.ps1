@@ -21,13 +21,12 @@ function Remove-Instance {
 
     process {
         Write-Verbose "Remove sqllocaldb instance $Name."
-        Stop-Instance -Name $Name
+        Stop-Instance -Name $Name -ErrorAction Stop
 
-        $response = sqllocaldb delete $Name
-
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to delete sqllocaldb instance $Name."
+        $result = Invoke-SqlLocalDb -ArgumentList @('delete', $Name)
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        if (-not $result.Succeeded) {
+            Write-SqlLocalDbError -Message "Failed to delete LocalDB instance '$Name'." -Details $result.Error
         }
 
     }

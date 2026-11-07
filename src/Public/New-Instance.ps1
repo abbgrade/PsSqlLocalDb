@@ -46,19 +46,25 @@ function New-Instance {
 
     process {
         Write-Verbose "Create sqllocaldb instance $Name."
-        $response = sqllocaldb create $Name $Version -s
+        $arguments = @('create', $Name)
+        if ($Version) {
+            $arguments += $Version
+        }
+        $arguments += '-s'
 
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to create sqllocaldb instance $Name."
+        $result = Invoke-SqlLocalDb -ArgumentList $arguments
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        if (-not $result.Succeeded) {
+            Write-SqlLocalDbError -Message "Failed to create LocalDB instance '$Name'." -Details $result.Error
+            return
         }
 
         $instance = Get-Instance -Name $Name
-        if ( $instance -and $instance.Version -ne '0.0' ) {
-            $instance | Write-Output
+        if ($null -eq $instance) {
+            Write-SqlLocalDbError -Message "Created LocalDB instance '$Name', but could not retrieve its details."
+            return
         }
-        else {
-            Write-Error 'Failed to return new sqllocaldb instance.'
-        }
+
+        $instance
     }
 }

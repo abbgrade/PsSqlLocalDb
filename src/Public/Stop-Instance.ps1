@@ -25,16 +25,15 @@ function Stop-Instance {
     process {
         Write-Verbose "Stop sqllocaldb instance $Name."
 
-        if ( $Force ) {
-            $response = sqllocaldb stop $Name -k
-        }
-        else {
-            $response = sqllocaldb stop $Name
+        $arguments = @('stop', $Name)
+        if ($Force) {
+            $arguments += '-k'
         }
 
-        $response | Where-Object { $_ } | Write-Verbose
-        if ( -not $? ) {
-            Write-Error "Failed to stop sqllocaldb instance $Name."
+        $result = Invoke-SqlLocalDb -ArgumentList $arguments
+        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+        if (-not $result.Succeeded) {
+            Write-SqlLocalDbError -Message "Failed to stop LocalDB instance '$Name'." -Details $result.Error
         }
     }
 }
