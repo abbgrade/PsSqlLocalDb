@@ -13,7 +13,8 @@ stops a sqllocaldb instance.
 ## SYNTAX
 
 ```
-Stop-LocalDbInstance [-Name] <String> [-Force] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Stop-LocalDbInstance [-Name] <String> [-Force] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -25,6 +26,11 @@ Stop-LocalDbInstance [-Name] <String> [-Force] [-ProgressAction <ActionPreferenc
 ```
 $instance = New-LocalDbInstance
 PS> $instance | Stop-LocalDbInstance
+```
+
+### EXAMPLE 2
+```
+Stop-LocalDbInstance -Name 'foobar' -WhatIf
 ```
 
 ## PARAMETERS
@@ -55,6 +61,37 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

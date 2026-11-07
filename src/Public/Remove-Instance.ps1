@@ -9,9 +9,12 @@ function Remove-Instance {
     PS> $instance = New-LocalDbInstance
     PS> $instance | Remove-LocalDbInstance
 
+    .EXAMPLE
+    PS> Remove-LocalDbInstance -Name 'foobar' -WhatIf
+
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         # Specifies the name of the instance to remove.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
@@ -21,12 +24,15 @@ function Remove-Instance {
 
     process {
         Write-Verbose "Remove sqllocaldb instance $Name."
-        Stop-Instance -Name $Name -ErrorAction Stop
 
-        $result = Invoke-SqlLocalDb -ArgumentList @('delete', $Name)
-        $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
-        if (-not $result.Succeeded) {
-            Write-SqlLocalDbError -Message "Failed to delete LocalDB instance '$Name'." -Details $result.Error
+        if ($PSCmdlet.ShouldProcess($Name, 'Remove LocalDB instance')) {
+            Stop-Instance -Name $Name -Confirm:$false -ErrorAction Stop
+
+            $result = Invoke-SqlLocalDb -ArgumentList @('delete', $Name)
+            $result.Output | Where-Object { "$_".Trim() } | Write-Verbose
+            if (-not $result.Succeeded) {
+                Write-SqlLocalDbError -Message "Failed to delete LocalDB instance '$Name'." -Details $result.Error
+            }
         }
 
     }

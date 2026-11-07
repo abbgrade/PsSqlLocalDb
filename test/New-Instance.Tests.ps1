@@ -18,6 +18,19 @@ Describe New-Instance {
         Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
     }
 
+    It 'does not create an instance when WhatIf is specified' -Tag UnitTest {
+        # Arrange
+        Mock -CommandName sqllocaldb -MockWith {
+            throw 'sqllocaldb should not be invoked'
+        } -ModuleName PsSqlLocalDb
+
+        # Act
+        New-LocalDbInstance -Name 'WhatIfInstance' -WhatIf
+
+        # Assert
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+    }
+
     Context LocalDb {
 
         It 'Returns values' -Tag IntegrationTest {

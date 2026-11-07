@@ -16,6 +16,19 @@ Describe Remove-Instance {
         Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
     }
 
+    It 'does not stop or delete an instance when WhatIf is specified' -Tag UnitTest {
+        # Arrange
+        Mock -CommandName sqllocaldb -MockWith {
+            throw 'sqllocaldb should not be invoked'
+        } -ModuleName PsSqlLocalDb
+
+        # Act
+        Remove-LocalDbInstance -Name 'TestInstance' -WhatIf
+
+        # Assert
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+    }
+
     Context LocalDb {
         AfterEach {
             if ($Instance -and (Get-LocalDbInstance | Where-Object Name -EQ $Instance.Name)) {

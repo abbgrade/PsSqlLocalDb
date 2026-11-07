@@ -29,9 +29,12 @@ function New-Instance {
     Name                           foobar
     Version                        15.0.4153.1
 
+    .EXAMPLE
+    PS> New-LocalDbInstance -Name 'foobar' -WhatIf
+
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         # Specifies the name of the instance to create.
         [Parameter()]
@@ -51,6 +54,10 @@ function New-Instance {
             $arguments += $Version
         }
         $arguments += '-s'
+
+        if (-not $PSCmdlet.ShouldProcess($Name, 'Create LocalDB instance')) {
+            return
+        }
 
         $result = Invoke-SqlLocalDb -ArgumentList $arguments
         $result.Output | Where-Object { "$_".Trim() } | Write-Verbose

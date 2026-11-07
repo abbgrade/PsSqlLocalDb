@@ -15,6 +15,19 @@ Describe Stop-Instance {
         { Stop-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop } | Should -Throw '*stop failed*'
     }
 
+    It 'does not stop an instance when WhatIf is specified' -Tag UnitTest {
+        # Arrange
+        Mock -CommandName sqllocaldb -MockWith {
+            throw 'sqllocaldb should not be invoked'
+        } -ModuleName PsSqlLocalDb
+
+        # Act
+        Stop-LocalDbInstance -Name 'TestInstance' -WhatIf
+
+        # Assert
+        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+    }
+
     Context LocalDb {
         BeforeEach {
             $Instance = New-LocalDbInstance
