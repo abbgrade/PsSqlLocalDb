@@ -7,29 +7,27 @@ Describe Remove-Instance {
     }
 
     Context LocalDb {
-        BeforeEach {
+        AfterEach {
+            if ($Instance -and (Get-LocalDbInstance | Where-Object Name -EQ $Instance.Name)) {
+                $Instance | Remove-LocalDbInstance -ErrorAction Stop
+            }
+        }
+
+        It 'removes a <State> instance' -TestCases @(
+            @{ State = 'running'; StopBeforeRemoval = $false }
+            @{ State = 'stopped'; StopBeforeRemoval = $true }
+        ) {
+            param($State, $StopBeforeRemoval)
+
+            # Arrange
             $Instance = New-LocalDbInstance
-        }
-
-        It 'removes a running instance' {
-            # Arrange
             $instanceName = $Instance.Name
+            if ($StopBeforeRemoval) {
+                $Instance | Stop-LocalDbInstance -ErrorAction Stop
+            }
 
             # Act
-            $Instance | Remove-LocalDbInstance
-
-            # Assert
-            $remainingInstances = @(Get-LocalDbInstance | Where-Object Name -EQ $instanceName)
-            $remainingInstances | Should -BeNullOrEmpty
-        }
-
-        It 'removes a stopped instance' {
-            # Arrange
-            $instanceName = $Instance.Name
-
-            # Act
-            $Instance | Stop-LocalDbInstance
-            $Instance | Remove-LocalDbInstance
+            $Instance | Remove-LocalDbInstance -ErrorAction Stop
 
             # Assert
             $remainingInstances = @(Get-LocalDbInstance | Where-Object Name -EQ $instanceName)
