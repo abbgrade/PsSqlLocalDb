@@ -14,12 +14,13 @@ Returns connection parameters to a available localDb.
 
 ### All (Default)
 ```
-Get-LocalDbInstance [-Version <String>] [<CommonParameters>]
+Get-LocalDbInstance [-Version <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### Single
 ```
-Get-LocalDbInstance [-Name <String>] [-Version <String>] [<CommonParameters>]
+Get-LocalDbInstance [-Name <String>] [-Version <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -63,6 +64,21 @@ Filters by version of the sql server instance.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
