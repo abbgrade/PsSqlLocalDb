@@ -17,31 +17,35 @@ function New-Instance {
     <#
 
     .SYNOPSIS
-    Creates a new sqllocaldb instance.
+    Creates and starts a SQL Server LocalDB instance.
+
+    .DESCRIPTION
+    Creates a LocalDB instance, starts it, and returns its instance details.
+    If no name is specified, a random name is generated. Use Get-LocalDbVersion
+    to see the installed versions that can be used with the Version parameter.
+    Supports ShouldProcess, so use -WhatIf to preview the operation or
+    -Confirm to be prompted before it runs.
 
     .EXAMPLE
     PS> New-LocalDbInstance -Name 'foobar'
 
-    [PSCustomObject]
-
-    Name                           Value
-    ----                           -----
-    Name                           foobar
-    Version                        15.0.4153.1
+    Creates and starts an instance named 'foobar', then returns its details.
 
     .EXAMPLE
     PS> New-LocalDbInstance -Name 'foobar' -WhatIf
+
+    Shows the create operation without creating or starting the instance.
 
     #>
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        # Specifies the name of the instance to create.
+        # Name for the new instance; defaults to a random eight-character name.
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [string] $Name = ( [string](New-Guid) ).Substring(0, 8),
 
-        # Specifies the sql server version to use.
+        # Installed SQL Server LocalDB version to use; defaults to SqlLocalDB's version.
         [Parameter()]
         [ValidateSet([SqlServerVersion])]
         [string] $Version

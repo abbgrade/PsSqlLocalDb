@@ -8,7 +8,7 @@ schema: 2.0.0
 # Remove-LocalDbInstance
 
 ## SYNOPSIS
-Removes a sqllocaldb instance.
+Stops and removes a SQL Server LocalDB instance.
 
 ## SYNTAX
 
@@ -18,7 +18,10 @@ Remove-LocalDbInstance [-Name] <String> [-ProgressAction <ActionPreference>] [-W
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Stops the specified instance, then deletes it using the
+SqlLocalDB utility.
+Supports ShouldProcess, so use -WhatIf to preview
+the operation or -Confirm to be prompted before it runs.
 
 ## EXAMPLES
 
@@ -28,15 +31,19 @@ $instance = New-LocalDbInstance
 PS> $instance | Remove-LocalDbInstance
 ```
 
+Removes the instance represented by the object.
+
 ### EXAMPLE 2
 ```
 Remove-LocalDbInstance -Name 'foobar' -WhatIf
 ```
 
+Shows the removal operation without stopping or deleting the instance.
+
 ## PARAMETERS
 
 ### -Name
-Specifies the name of the instance to remove.
+Name of the LocalDB instance to remove; accepts instance objects by Name.
 
 ```yaml
 Type: String

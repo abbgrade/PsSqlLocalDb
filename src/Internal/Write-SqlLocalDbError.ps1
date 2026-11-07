@@ -7,12 +7,6 @@ function Write-SqlLocalDbError {
     Combines the supplied message and optional details, then writes a
     ResourceUnavailable error identifying `sqllocaldb` as the target.
 
-    .PARAMETER Message
-    Main description of the operation that failed.
-
-    .PARAMETER Details
-    Optional diagnostic details to append to the message.
-
     .EXAMPLE
     Write-SqlLocalDbError -Message 'Failed to list LocalDB instances.' -Details $result.Error
 
@@ -22,9 +16,11 @@ function Write-SqlLocalDbError {
     #>
     [CmdletBinding()]
     param (
+        # Main description of the operation that failed.
         [Parameter(Mandatory)]
         [string] $Message,
 
+        # Optional diagnostic details to append to the message.
         [Parameter()]
         [string] $Details
     )

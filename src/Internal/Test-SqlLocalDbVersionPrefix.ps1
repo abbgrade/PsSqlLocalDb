@@ -9,12 +9,6 @@ function Test-SqlLocalDbVersionPrefix {
     such as 15, 15.0, or 15.0.4153. Missing trailing components in Prefix do
     not affect the match. Returns false when Version is null.
 
-    .PARAMETER Version
-    Installed version to compare.
-
-    .PARAMETER Prefix
-    One to four dot-separated numeric version components.
-
     .OUTPUTS
     System.Boolean
     True when all specified components match; otherwise false.
@@ -28,9 +22,11 @@ function Test-SqlLocalDbVersionPrefix {
     #>
     [CmdletBinding()]
     param (
+        # Installed version to compare.
         [Parameter()]
         [version] $Version,
 
+        # One to four dot-separated numeric version components.
         [Parameter(Mandatory)]
         [ValidatePattern('^\d+(?:\.\d+){0,3}$')]
         [string] $Prefix

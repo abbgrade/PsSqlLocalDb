@@ -3,20 +3,29 @@ function Remove-Instance {
     <#
 
     .SYNOPSIS
-    Removes a sqllocaldb instance.
+    Stops and removes a SQL Server LocalDB instance.
+
+    .DESCRIPTION
+    Stops the specified instance, then deletes it using the
+    SqlLocalDB utility. Supports ShouldProcess, so use -WhatIf to preview
+    the operation or -Confirm to be prompted before it runs.
 
     .EXAMPLE
     PS> $instance = New-LocalDbInstance
     PS> $instance | Remove-LocalDbInstance
 
+    Removes the instance represented by the object.
+
     .EXAMPLE
     PS> Remove-LocalDbInstance -Name 'foobar' -WhatIf
+
+    Shows the removal operation without stopping or deleting the instance.
 
     #>
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        # Specifies the name of the instance to remove.
+        # Name of the LocalDB instance to remove; accepts instance objects by Name.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [string] $Name
