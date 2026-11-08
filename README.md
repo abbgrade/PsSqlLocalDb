@@ -1,5 +1,7 @@
 # PsSqlLocalDb
 
+[![.github/workflows/build-validation.yml](https://github.com/abbgrade/PsSqlLocalDb/actions/workflows/build-validation.yml/badge.svg)](https://github.com/abbgrade/PsSqlLocalDb/actions/workflows/build-validation.yml)
+
 PsSqlLocalDb is a PowerShell module for managing SQL Server LocalDB instances
 through the [SqlLocalDB utility](https://learn.microsoft.com/sql/tools/sqllocaldb-utility).
 

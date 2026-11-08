@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/Remove-LocalDbInstance.html
 schema: 2.0.0
 ---
 
@@ -22,23 +22,32 @@ Stops the specified instance, then deletes it using the
 SqlLocalDB utility.
 Supports ShouldProcess, so use -WhatIf to preview
 the operation or -Confirm to be prompted before it runs.
+Requires SQL
+Server LocalDB to be installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-$instance = New-LocalDbInstance
+Import-Module PsSqlLocalDb
+PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
 PS> $instance | Remove-LocalDbInstance
 ```
 
-Removes the instance represented by the object.
+Creates, then removes the temporary instance.
+Requires SQL Server LocalDB
+to be installed.
+The removal command produces no success output.
 
 ### EXAMPLE 2
 ```
-Remove-LocalDbInstance -Name 'foobar' -WhatIf
+Import-Module PsSqlLocalDb
+PS> Remove-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 ```
 
-Shows the removal operation without stopping or deleting the instance.
+Previews removing the instance without stopping or deleting it.
+The
+confirmation text is environment-dependent.
 
 ## PARAMETERS
 
@@ -113,3 +122,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/Remove-LocalDbInstance.html](https://abbgrade.github.io/PsSqlLocalDb/docs/Remove-LocalDbInstance.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+

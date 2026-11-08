@@ -6,34 +6,38 @@ Describe New-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    It 'does not query the instance after a failed create command' -Tag UnitTest {
-        Mock -CommandName sqllocaldb -MockWith {
-            $global:LASTEXITCODE = 1
-            'create failed'
-        } -ModuleName PsSqlLocalDb
+    Context 'UnitTests' {
+        It 'does not query the instance after a failed create command' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                $global:LASTEXITCODE = 1
+                'create failed'
+            } -ModuleName PsSqlLocalDb
 
-        $result = New-LocalDbInstance -Name 'FailedCreate' -ErrorAction SilentlyContinue
+            # Act
+            $result = New-LocalDbInstance -Name 'FailedCreate' -ErrorAction SilentlyContinue
 
-        $result | Should -BeNullOrEmpty
-        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+            # Assert
+            $result | Should -BeNullOrEmpty
+            Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
+        }
+
+        It 'does not create an instance when WhatIf is specified' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                throw 'sqllocaldb should not be invoked'
+            } -ModuleName PsSqlLocalDb
+
+            # Act
+            New-LocalDbInstance -Name 'WhatIfInstance' -WhatIf
+
+            # Assert
+            Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+        }
     }
 
-    It 'does not create an instance when WhatIf is specified' -Tag UnitTest {
-        # Arrange
-        Mock -CommandName sqllocaldb -MockWith {
-            throw 'sqllocaldb should not be invoked'
-        } -ModuleName PsSqlLocalDb
-
-        # Act
-        New-LocalDbInstance -Name 'WhatIfInstance' -WhatIf
-
-        # Assert
-        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
-    }
-
-    Context LocalDb {
-
-        It 'Returns values' -Tag IntegrationTest {
+    Context 'IntegrationTests' {
+        It 'returns values for a new LocalDB instance' -Tag IntegrationTest {
             # Act
             $Instance = New-LocalDbInstance
 
@@ -41,9 +45,10 @@ Describe New-Instance {
             $Instance | Should -Not -BeNullOrEmpty
             $Instance.Name | Should -Not -BeNullOrEmpty
             $Instance.Version | Should -Not -BeNullOrEmpty
+            $Instance | Remove-LocalDbInstance
         }
 
-        It 'Returns values with null version' -Tag IntegrationTest {
+        It 'returns values with a null version' -Tag IntegrationTest {
             # Act
             $Instance = New-LocalDbInstance -Version:$null
 
@@ -51,15 +56,15 @@ Describe New-Instance {
             $Instance | Should -Not -BeNullOrEmpty
             $Instance.Name | Should -Not -BeNullOrEmpty
             $Instance.Version | Should -Not -BeNullOrEmpty
+            $Instance | Remove-LocalDbInstance
         }
 
-        Context Version {
-
+        Context 'Version' {
             BeforeAll {
                 $Version = Get-LocalDbVersion | Select-Object -First 1 -ExpandProperty Version
             }
 
-            It 'Creates with specified full version' -Tag IntegrationTest {
+            It 'creates with a specified full version' -Tag IntegrationTest {
                 # Arrange
                 $expectedVersion = $Version
 
@@ -70,9 +75,10 @@ Describe New-Instance {
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $expectedVersion
+                $Instance | Remove-LocalDbInstance
             }
 
-            It 'Creates with specified major.minor version' -Tag IntegrationTest {
+            It 'creates with a specified major.minor version' -Tag IntegrationTest {
                 # Arrange
                 $versionInput = "$( $Version.Major ).$( $Version.Minor )"
 
@@ -83,9 +89,10 @@ Describe New-Instance {
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $Version
+                $Instance | Remove-LocalDbInstance
             }
 
-            It 'Creates with specified major.minor.build version' -Tag IntegrationTest {
+            It 'creates with a specified major.minor.build version' -Tag IntegrationTest {
                 # Arrange
                 $versionInput = "$( $Version.Major ).$( $Version.Minor ).$( $Version.Build )"
 
@@ -96,22 +103,24 @@ Describe New-Instance {
                 $Instance | Should -Not -BeNullOrEmpty
                 $Instance.Name | Should -Not -BeNullOrEmpty
                 $Instance.Version | Should -Be $Version
+                $Instance | Remove-LocalDbInstance
             }
         }
 
-        Context EmptyVersion {
-            It works -Tag IntegrationTest {
-                # Arrange
-                [System.Version] $Version = $null
+        It 'accepts a null version object' -Tag IntegrationTest {
+            # Arrange
+            [System.Version] $Version = $null
 
-                # Act
-                $Instance = New-LocalDbInstance -Version:$Version
+            # Act
+            $Instance = New-LocalDbInstance -Version:$Version
 
-                # Assert
-            }
+            # Assert
+            $Instance | Should -Not -BeNullOrEmpty
+            $Instance.Name | Should -Not -BeNullOrEmpty
+            $Instance | Remove-LocalDbInstance
         }
 
-        It 'Throws with unavailable version' -Tag IntegrationTest {
+        It 'throws with an unavailable version' -Tag IntegrationTest {
             # Act
             $action = {
                 New-LocalDbInstance -Version 47.11
@@ -121,23 +130,25 @@ Describe New-Instance {
             $action | Should -Throw
         }
 
-        AfterEach {
-            if ( $Instance ) {
-                $Instance | Remove-LocalDbInstance
-            }
-        }
-
         BeforeDiscovery {
             $PsSqlClient = Import-Module PsSqlClient -PassThru -ErrorAction SilentlyContinue
         }
 
-        Context PsSqlClient -Skip:( -Not $PsSqlClient ) {
-
+        Context 'PsSqlClient' -Skip:( -Not $PsSqlClient ) {
             BeforeAll {
                 $Instance = New-LocalDbInstance
             }
 
-            It 'Connects by DataSource' -Tag IntegrationTest {
+            AfterEach {
+                if ( $SqlConnection ) {
+                    Disconnect-TSqlInstance -Connection $SqlConnection
+                }
+                if ( $Instance ) {
+                    $Instance | Remove-LocalDbInstance
+                }
+            }
+
+            It 'connects by DataSource' -Tag IntegrationTest {
                 # Arrange
                 $instanceName = $Instance.Name
 
@@ -145,12 +156,7 @@ Describe New-Instance {
                 $SqlConnection = Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )" -ConnectTimeout 30
 
                 # Assert
-            }
-
-            AfterEach {
-                if ( $SqlConnection ) {
-                    Disconnect-TSqlInstance -Connection $SqlConnection
-                }
+                $SqlConnection | Should -Not -BeNullOrEmpty
             }
         }
     }

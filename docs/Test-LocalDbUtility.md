@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/Test-LocalDbUtility.html
 schema: 2.0.0
 ---
 
@@ -19,13 +19,20 @@ Test-LocalDbUtility [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ## DESCRIPTION
 Runs the SqlLocalDB versions command and returns $true if it succeeds,
 otherwise returns $false.
+Requires SQL Server LocalDB to be installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Test-LocalDbUtility
+Import-Module PsSqlLocalDb
+PS> Test-LocalDbUtility
 ```
+
+Tests whether the LocalDB utility is available.
+The output is True when the
+utility runs successfully and False otherwise; the result depends on the
+machine configuration.
 
 True
 
@@ -57,3 +64,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/Test-LocalDbUtility.html](https://abbgrade.github.io/PsSqlLocalDb/docs/Test-LocalDbUtility.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+

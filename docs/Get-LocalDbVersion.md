@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbVersion.html
 schema: 2.0.0
 ---
 
@@ -21,13 +21,20 @@ Returns the names and version numbers of SQL Server LocalDB versions
 installed on the computer.
 These versions can be used when creating
 instances with New-LocalDbInstance.
+Requires SQL Server LocalDB to be
+installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-LocalDbVersion
+Import-Module PsSqlLocalDb
+PS> Get-LocalDbVersion
 ```
+
+Lists the LocalDB versions installed on this computer.
+The following output
+is illustrative; installed versions vary by machine.
 
 Name                      Version
 ----                      -------
@@ -58,6 +65,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### PSCustomObject
+### An installed LocalDB version with Name and Version properties.
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbVersion.html](https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbVersion.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+

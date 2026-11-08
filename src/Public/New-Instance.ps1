@@ -24,17 +24,40 @@ function New-Instance {
     If no name is specified, a random name is generated. Use Get-LocalDbVersion
     to see the installed versions that can be used with the Version parameter.
     Supports ShouldProcess, so use -WhatIf to preview the operation or
-    -Confirm to be prompted before it runs.
+    -Confirm to be prompted before it runs. Requires SQL Server LocalDB to be
+    installed.
 
     .EXAMPLE
-    PS> New-LocalDbInstance -Name 'foobar'
+    PS> Import-Module PsSqlLocalDb
+    PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
+    PS> $instance
+    PS> $instance | Remove-LocalDbInstance
 
-    Creates and starts an instance named 'foobar', then returns its details.
+    Creates and starts the named instance, then displays its details. Requires
+    SQL Server LocalDB to be installed. Example output is abbreviated and
+    illustrative; version and named pipe vary by machine. The example removes
+    the temporary instance.
+
+    Name            Version    NamedPipe
+    ----            -------    ---------
+    ExampleInstance 15.0.4153.1 machine-specific
 
     .EXAMPLE
-    PS> New-LocalDbInstance -Name 'foobar' -WhatIf
+    PS> Import-Module PsSqlLocalDb
+    PS> New-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 
-    Shows the create operation without creating or starting the instance.
+    Previews creating the instance without creating or starting it. The
+    confirmation text is environment-dependent.
+
+    .OUTPUTS
+    PSCustomObject
+    The created instance with Name, Version, and NamedPipe properties.
+
+    .LINK
+    https://abbgrade.github.io/PsSqlLocalDb/docs/New-LocalDbInstance.html
+
+    .LINK
+    https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility
 
     #>
 

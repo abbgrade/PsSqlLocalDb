@@ -6,29 +6,36 @@ Describe Stop-Instance {
         Import-Module $PSScriptRoot\..\src\PsSqlLocalDb.psd1 -Force -ErrorAction Stop
     }
 
-    It 'reports a failed stop command' -Tag UnitTest {
-        Mock -CommandName sqllocaldb -MockWith {
-            $global:LASTEXITCODE = 1
-            'stop failed'
-        } -ModuleName PsSqlLocalDb
+    Context 'UnitTests' {
+        It 'reports a failed stop command' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                $global:LASTEXITCODE = 1
+                'stop failed'
+            } -ModuleName PsSqlLocalDb
 
-        { Stop-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop } | Should -Throw '*stop failed*'
+            # Act
+            $action = { Stop-LocalDbInstance -Name 'TestInstance' -ErrorAction Stop }
+
+            # Assert
+            $action | Should -Throw '*stop failed*'
+        }
+
+        It 'does not stop an instance when WhatIf is specified' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                throw 'sqllocaldb should not be invoked'
+            } -ModuleName PsSqlLocalDb
+
+            # Act
+            Stop-LocalDbInstance -Name 'TestInstance' -WhatIf
+
+            # Assert
+            Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
+        }
     }
 
-    It 'does not stop an instance when WhatIf is specified' -Tag UnitTest {
-        # Arrange
-        Mock -CommandName sqllocaldb -MockWith {
-            throw 'sqllocaldb should not be invoked'
-        } -ModuleName PsSqlLocalDb
-
-        # Act
-        Stop-LocalDbInstance -Name 'TestInstance' -WhatIf
-
-        # Assert
-        Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 0 -Exactly
-    }
-
-    Context LocalDb {
+    Context 'IntegrationTests' {
         BeforeEach {
             $Instance = New-LocalDbInstance
         }
@@ -41,9 +48,8 @@ Describe Stop-Instance {
             $PsSqlClient = Import-Module PsSqlClient -PassThru -ErrorAction SilentlyContinue
         }
 
-        Context PsSqlClient -Skip:( -Not $PsSqlClient ) {
-
-            It 'Stops the instance' -Tag IntegrationTest {
+        Context 'PsSqlClient' -Skip:( -Not $PsSqlClient ) {
+            It 'stops the instance' -Tag IntegrationTest {
                 # Arrange
                 $instanceName = $Instance.Name
 
@@ -54,13 +60,16 @@ Describe Stop-Instance {
                 Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )"
             }
 
-            It 'Stops used instance' -Tag IntegrationTest {
+            It 'stops a used instance' -Tag IntegrationTest {
                 # Arrange
                 $instanceName = $Instance.Name
                 Connect-TSqlInstance -DataSource "(LocalDb)\$( $instanceName )"
 
                 # Act
                 $Instance | Stop-LocalDbInstance -Force
+
+                # Assert
+                $true | Should -BeTrue
             }
         }
     }
