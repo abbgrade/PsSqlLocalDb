@@ -4,6 +4,15 @@
 
 PsSqlLocalDb is a PowerShell module for managing SQL Server LocalDB instances
 through the [SqlLocalDB utility](https://learn.microsoft.com/sql/tools/sqllocaldb-utility).
+It was developed to integrate LocalDB into PowerShell-based DevOps workflows,
+including automated testing.
+
+## Features
+
+- List installed SQL Server LocalDB versions and instances.
+- Create and start LocalDB instances.
+- Stop and remove instances.
+- Check whether the SqlLocalDB utility is available.
 
 ## Requirements
 
@@ -19,7 +28,8 @@ Install-Module -Name PsSqlLocalDb
 ```
 
 To build and install from source, clone the repository, install
-[InvokeBuild](https://github.com/nightroman/Invoke-Build), then run:
+[InvokeBuild](https://github.com/nightroman/Invoke-Build) and
+[platyPS](https://www.powershellgallery.com/packages/platyPS), then run:
 
 ```powershell
 Invoke-Build Install
@@ -33,6 +43,18 @@ Import the module and check the installed LocalDB versions and instances:
 Import-Module PsSqlLocalDb
 Get-LocalDbVersion
 Get-LocalDbInstance
+```
+
+Create and start a temporary instance, inspect its connection details, then
+remove it when finished:
+
+```powershell
+$instance = New-LocalDbInstance -Name 'PsSqlLocalDbQuickStart'
+Get-LocalDbInstance -Name $instance.Name
+
+# Use $instance.NamedPipe to connect to the LocalDB instance.
+
+Remove-LocalDbInstance -Name $instance.Name
 ```
 
 See the [command reference](https://abbgrade.github.io/PsSqlLocalDb/) for all
@@ -54,7 +76,8 @@ See [CHANGELOG.md](./CHANGELOG.md).
 
 ### Build
 
-The build scripts require InvokeBuild. If it is not installed, install it with the command `Install-Module InvokeBuild -Scope CurrentUser`.
+The build scripts require InvokeBuild and platyPS. Install them with
+`Install-Module InvokeBuild, platyPS -Scope CurrentUser`.
 
 You can build the module using the VS Code build task or with the command `Invoke-Build Build`.
 
@@ -66,6 +89,6 @@ You can build the module using the VS Code build task or with the command `Invok
 4. If you want to create a pre-release.
    1. Push the release branch to GitHub, to publish the pre-release to PsGallery.
 5. Finish release using git-flow.
-6. Check if tags are not pushed to GitHub.
+6. Verify that the release tag has been pushed to GitHub; push it if needed.
 7. Check if the release branch is deleted on GitHub.
 8. Create the release on GitHub.
