@@ -49,6 +49,25 @@ Describe Get-Instance {
             $result | Should -BeNullOrEmpty
             Should -Invoke -CommandName sqllocaldb -ModuleName PsSqlLocalDb -Times 1 -Exactly
         }
+
+        It 'uses the requested name and warns when response fields are incomplete' -Tag UnitTest {
+            # Arrange
+            Mock -CommandName sqllocaldb -MockWith {
+                $global:LASTEXITCODE = 0
+                @('', 'malformed line', 'Version: invalid')
+            } -ModuleName PsSqlLocalDb
+
+            # Act
+            $result = Get-LocalDbInstance -Name 'RequestedInstance' -WarningVariable warnings
+
+            # Assert
+            $result.Name | Should -Be 'RequestedInstance'
+            $result.Version | Should -BeNullOrEmpty
+            $result.NamedPipe | Should -BeNullOrEmpty
+            $warnings.Count | Should -Be 2
+            $warnings[0] | Should -Match 'did not return an instance with name'
+            $warnings[1] | Should -Match 'returned an invalid version'
+        }
     }
 
     Context 'IntegrationTests' {

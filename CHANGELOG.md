@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Extracted LocalDB instance output parsing into an internal helper and added coverage for incomplete output.
+- Clarified public command help, examples, prerequisites, output types, and online documentation links.
+- Linked command help to the Microsoft SqlLocalDB utility reference.
+
 ## [0.5.0] - 2026-11-07
 
 ### Changed

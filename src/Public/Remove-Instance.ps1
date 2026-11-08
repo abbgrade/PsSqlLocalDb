@@ -8,18 +8,29 @@ function Remove-Instance {
     .DESCRIPTION
     Stops the specified instance, then deletes it using the
     SqlLocalDB utility. Supports ShouldProcess, so use -WhatIf to preview
-    the operation or -Confirm to be prompted before it runs.
+    the operation or -Confirm to be prompted before it runs. Requires SQL
+    Server LocalDB to be installed.
 
     .EXAMPLE
-    PS> $instance = New-LocalDbInstance
+    PS> Import-Module PsSqlLocalDb
+    PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
     PS> $instance | Remove-LocalDbInstance
 
-    Removes the instance represented by the object.
+    Creates, then removes the temporary instance. Requires SQL Server LocalDB
+    to be installed. The removal command produces no success output.
 
     .EXAMPLE
-    PS> Remove-LocalDbInstance -Name 'foobar' -WhatIf
+    PS> Import-Module PsSqlLocalDb
+    PS> Remove-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 
-    Shows the removal operation without stopping or deleting the instance.
+    Previews removing the instance without stopping or deleting it. The
+    confirmation text is environment-dependent.
+
+    .LINK
+    https://abbgrade.github.io/PsSqlLocalDb/docs/Remove-LocalDbInstance.html
+
+    .LINK
+    https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility
 
     #>
 

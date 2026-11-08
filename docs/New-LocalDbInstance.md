@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/New-LocalDbInstance.html
 schema: 2.0.0
 ---
 
@@ -24,22 +24,40 @@ Use Get-LocalDbVersion
 to see the installed versions that can be used with the Version parameter.
 Supports ShouldProcess, so use -WhatIf to preview the operation or
 -Confirm to be prompted before it runs.
+Requires SQL Server LocalDB to be
+installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-New-LocalDbInstance -Name 'foobar'
+Import-Module PsSqlLocalDb
+PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
+PS> $instance
+PS> $instance | Remove-LocalDbInstance
 ```
 
-Creates and starts an instance named 'foobar', then returns its details.
+Creates and starts the named instance, then displays its details.
+Requires
+SQL Server LocalDB to be installed.
+Example output is abbreviated and
+illustrative; version and named pipe vary by machine.
+The example removes
+the temporary instance.
+
+Name            Version    NamedPipe
+----            -------    ---------
+ExampleInstance 15.0.4153.1 machine-specific
 
 ### EXAMPLE 2
 ```
-New-LocalDbInstance -Name 'foobar' -WhatIf
+Import-Module PsSqlLocalDb
+PS> New-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 ```
 
-Shows the create operation without creating or starting the instance.
+Previews creating the instance without creating or starting it.
+The
+confirmation text is environment-dependent.
 
 ## PARAMETERS
 
@@ -126,6 +144,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### PSCustomObject
+### The created instance with Name, Version, and NamedPipe properties.
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/New-LocalDbInstance.html](https://abbgrade.github.io/PsSqlLocalDb/docs/New-LocalDbInstance.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+

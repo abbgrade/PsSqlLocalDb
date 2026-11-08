@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbInstance.html
 schema: 2.0.0
 ---
 
@@ -25,33 +25,29 @@ Get-LocalDbInstance [-Name <String>] [-Version <String>] [-ProgressAction <Actio
 
 ## DESCRIPTION
 Lists available LocalDB instances or gets details for one named instance.
-Each result includes the instance name and SQL Server version, and the named
-pipe used to connect when available.
-Use Version to filter by a version
-prefix.
+Each result contains the instance name, SQL Server version as a System.Version
+value when available, and the named pipe when available.
+Use Version to
+filter by a version prefix.
+Requires SQL Server LocalDB to be installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-LocalDbInstance
-```
-
-\[PSCustomObject\]
-
-Name                           Value
-----                           -----
-Name                           MSSQLLocalDB
-Version                        v11.0
-
-Lists all available instances.
-
-### EXAMPLE 2
-```
-Get-LocalDbInstance -Name 'MSSQLLocalDB'
+Import-Module PsSqlLocalDb
+PS> Get-LocalDbInstance -Name 'MSSQLLocalDB'
 ```
 
 Gets details for the MSSQLLocalDB instance.
+Requires SQL Server LocalDB to
+be installed.
+Example output is abbreviated and illustrative; the version and pipe name
+vary by machine.
+
+Name         Version    NamedPipe
+----         -------    ---------
+MSSQLLocalDB 15.0.4153.1 machine-specific
 
 ## PARAMETERS
 
@@ -108,6 +104,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### PSCustomObject
+### An instance with Name, Version, and NamedPipe properties.
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbInstance.html](https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbInstance.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+

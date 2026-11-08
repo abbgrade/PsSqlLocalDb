@@ -7,26 +7,32 @@ function Get-Instance {
 
     .DESCRIPTION
     Lists available LocalDB instances or gets details for one named instance.
-    Each result includes the instance name and SQL Server version, and the named
-    pipe used to connect when available. Use Version to filter by a version
-    prefix.
+    Each result contains the instance name, SQL Server version as a System.Version
+    value when available, and the named pipe when available. Use Version to
+    filter by a version prefix. Requires SQL Server LocalDB to be installed.
 
     .EXAMPLE
-    PS> Get-LocalDbInstance
-
-    [PSCustomObject]
-
-    Name                           Value
-    ----                           -----
-    Name                           MSSQLLocalDB
-    Version                        v11.0
-
-    Lists all available instances.
-
-    .EXAMPLE
+    PS> Import-Module PsSqlLocalDb
     PS> Get-LocalDbInstance -Name 'MSSQLLocalDB'
 
-    Gets details for the MSSQLLocalDB instance.
+    Gets details for the MSSQLLocalDB instance. Requires SQL Server LocalDB to
+    be installed.
+    Example output is abbreviated and illustrative; the version and pipe name
+    vary by machine.
+
+    Name         Version    NamedPipe
+    ----         -------    ---------
+    MSSQLLocalDB 15.0.4153.1 machine-specific
+
+    .OUTPUTS
+    PSCustomObject
+    An instance with Name, Version, and NamedPipe properties.
+
+    .LINK
+    https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbInstance.html
+
+    .LINK
+    https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility
 
     #>
 
@@ -64,23 +70,7 @@ function Get-Instance {
             return
         }
 
-        $instanceData = @{}
-        foreach ($line in $result.Output | ForEach-Object { "$_".Trim() } | Where-Object { $_ }) {
-            $field = $line -split ':', 2
-            if ($field.Count -ne 2) {
-                continue
-            }
-
-            $key = $field[0].Trim()
-            $value = $field[1].Trim()
-            Write-Verbose "$key=$value"
-
-            switch -Regex ($key) {
-                '^Name$' { $instanceData.Name = $value; break }
-                '^Version$' { $instanceData.Version = $value; break }
-                '^Instance pipe name$' { $instanceData.NamedPipe = $value; break }
-            }
-        }
+        $instanceData = ConvertFrom-SqlLocalDbInstanceInfo -Output $result.Output
 
         if (-not $instanceData.Name) {
             Write-Warning "'sqllocaldb info' did not return an instance with name $Name"

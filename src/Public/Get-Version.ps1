@@ -8,16 +8,30 @@ function Get-Version {
     .DESCRIPTION
     Returns the names and version numbers of SQL Server LocalDB versions
     installed on the computer. These versions can be used when creating
-    instances with New-LocalDbInstance.
+    instances with New-LocalDbInstance. Requires SQL Server LocalDB to be
+    installed.
 
     .EXAMPLE
-
+    PS> Import-Module PsSqlLocalDb
     PS> Get-LocalDbVersion
+
+    Lists the LocalDB versions installed on this computer. The following output
+    is illustrative; installed versions vary by machine.
 
     Name                      Version
     ----                      -------
     Microsoft SQL Server 2016 13.1.4001.0
     Microsoft SQL Server 2019 15.0.4153.1
+
+    .OUTPUTS
+    PSCustomObject
+    An installed LocalDB version with Name and Version properties.
+
+    .LINK
+    https://abbgrade.github.io/PsSqlLocalDb/docs/Get-LocalDbVersion.html
+
+    .LINK
+    https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility
 
     #>
 

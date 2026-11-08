@@ -9,18 +9,30 @@ function Stop-Instance {
     Stops the specified instance using the SqlLocalDB utility. Use Force to
     terminate processes that are accessing the instance. Supports ShouldProcess,
     so use -WhatIf to preview the operation or -Confirm to be prompted before it
-    runs.
+    runs. Requires SQL Server LocalDB to be installed.
 
     .EXAMPLE
-    PS> $instance = New-LocalDbInstance
+    PS> Import-Module PsSqlLocalDb
+    PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
     PS> $instance | Stop-LocalDbInstance
+    PS> $instance | Remove-LocalDbInstance
 
-    Stops the instance represented by the object.
+    Creates and stops a temporary instance. Requires SQL Server LocalDB to be
+    installed. The stop command produces no success output. Remove the instance
+    command then deletes the stopped instance.
 
     .EXAMPLE
-    PS> Stop-LocalDbInstance -Name 'foobar' -WhatIf
+    PS> Import-Module PsSqlLocalDb
+    PS> Stop-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 
-    Shows the stop operation without stopping the instance.
+    Previews stopping the instance without stopping it. The confirmation text
+    is environment-dependent.
+
+    .LINK
+    https://abbgrade.github.io/PsSqlLocalDb/docs/Stop-LocalDbInstance.html
+
+    .LINK
+    https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility
 
     #>
 

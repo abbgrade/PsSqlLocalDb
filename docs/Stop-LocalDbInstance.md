@@ -1,7 +1,7 @@
 ---
 external help file: PsSqlLocalDb-help.xml
 Module Name: PsSqlLocalDb
-online version:
+online version: https://abbgrade.github.io/PsSqlLocalDb/docs/Stop-LocalDbInstance.html
 schema: 2.0.0
 ---
 
@@ -24,23 +24,34 @@ terminate processes that are accessing the instance.
 Supports ShouldProcess,
 so use -WhatIf to preview the operation or -Confirm to be prompted before it
 runs.
+Requires SQL Server LocalDB to be installed.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-$instance = New-LocalDbInstance
+Import-Module PsSqlLocalDb
+PS> $instance = New-LocalDbInstance -Name 'ExampleInstance'
 PS> $instance | Stop-LocalDbInstance
+PS> $instance | Remove-LocalDbInstance
 ```
 
-Stops the instance represented by the object.
+Creates and stops a temporary instance.
+Requires SQL Server LocalDB to be
+installed.
+The stop command produces no success output.
+Remove the instance
+command then deletes the stopped instance.
 
 ### EXAMPLE 2
 ```
-Stop-LocalDbInstance -Name 'foobar' -WhatIf
+Import-Module PsSqlLocalDb
+PS> Stop-LocalDbInstance -Name 'ExampleInstance' -WhatIf
 ```
 
-Shows the stop operation without stopping the instance.
+Previews stopping the instance without stopping it.
+The confirmation text
+is environment-dependent.
 
 ## PARAMETERS
 
@@ -130,3 +141,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://abbgrade.github.io/PsSqlLocalDb/docs/Stop-LocalDbInstance.html](https://abbgrade.github.io/PsSqlLocalDb/docs/Stop-LocalDbInstance.html)
+
+[https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility](https://learn.microsoft.com/en-us/sql/tools/sqllocaldb-utility)
+
